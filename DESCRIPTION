@@ -1,0 +1,20 @@
+Package: gamPoiTransform
+Type: Package
+Title: Residual-based Variance Stabilizing Transformation for Gamma-Poisson Models
+Version: 0.0.0.9999
+Authors@R: person("Constantin", "Ahlmann-Eltze", email = "artjom31415@googlemail.com", 
+               role = c("aut", "cre"), comment = c(ORCID = "0000-0002-3762-068X"))
+Description: Variance-stabilizing transformations (VST) help with the analysis of 
+  heteroskedastic data (i.e., data where the variance is not constant). For Gamma-Poisson
+  count data, the variance grows quadratically with the mean. Traditional VSTs, however,
+  struggle to stabilize small counts. Residual-based VSTs overcome this problem by 
+  sharing information across samples.
+License: GPL-3
+Encoding: UTF-8
+Imports:
+  glmGamPoi,
+  matrixStats
+Suggests: 
+    testthat
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.1
