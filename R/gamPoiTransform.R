@@ -131,9 +131,9 @@ gamPoiTransform <- function(data,
   if(verbose){message("Calculate ", residual_type, " residuals")}
 
   if(! return_fit){
-    stats::residuals(fit, type = residual_type[1])
+    stats::residuals(fit, type = residual_type)
   }else{
-    list(Residuals = stats::residuals(fit, type = residual_type[1]),
+    list(Residuals = stats::residuals(fit, type = residual_type),
          fit = fit)
   }
 }
