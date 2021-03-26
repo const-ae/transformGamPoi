@@ -79,14 +79,14 @@
 #'  assay(sce_red) <- as.matrix(assay(sce_red))
 #'
 #'  # Apply VST
-#'  vst <- gamPoiTransform(sce_red, verbose = TRUE)
+#'  vst <- transformGamPoi(sce_red, verbose = TRUE)
 #'
 #'  # Plot first two principal components
 #'  vst_pca <- prcomp(t(vst), rank. = 2)
 #'  plot(vst_pca$x)
 #'
 #' @export
-gamPoiTransform <- function(data,
+transformGamPoi <- function(data,
                             offset_model = TRUE,
                             residual_type = c("randomized_quantile", "pearson"),
                             size_factors = TRUE,

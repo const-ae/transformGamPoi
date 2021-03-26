@@ -1,4 +1,4 @@
-Package: gamPoiTransform
+Package: transformGamPoi
 Type: Package
 Title: Residual-based Variance Stabilizing Transformation for Gamma-Poisson Models
 Version: 0.0.0.9999

@@ -1,4 +1,4 @@
 library(testthat)
-library(gamPoiTransform)
+library(transformGamPoi)
 
-test_check("gamPoiTransform")
+test_check("transformGamPoi")

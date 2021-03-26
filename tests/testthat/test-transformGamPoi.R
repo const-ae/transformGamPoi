@@ -1,4 +1,4 @@
-test_that("gamPoiTransform works", {
+test_that("transformGamPoi works", {
     n_genes <- 100
     n_cells <- 500
 
@@ -14,8 +14,8 @@ test_that("gamPoiTransform works", {
     summary(matrixStats::rowMeans2(Y))
 
 
-    resids <- gamPoiTransform(Y, verbose = TRUE)
-    res2 <- gamPoiTransform(Y, offset_model = FALSE, verbose = TRUE, return_fit = TRUE)
+    resids <- transformGamPoi(Y, verbose = TRUE)
+    res2 <- transformGamPoi(Y, offset_model = FALSE, verbose = TRUE, return_fit = TRUE)
     expect_true(all(abs(res2$fit$Beta[,2] - 1) < 0.1))
 
 })
