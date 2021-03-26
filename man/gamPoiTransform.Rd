@@ -30,7 +30,7 @@ However, \code{sctransform} suggested that it would be advantageous to nonethele
 \eqn{\beta_0} as it may counter data artifacts. On the other side, Lause et al. (2020)
 demonstrated that the estimating \eqn{\beta_0} and \eqn{\beta_1} together can be difficult. If
 you still want to fit \code{sctransform}'s model, you can set the \code{ridge_penalty} argument to a
-non-zero value, which shrinks \eqn{\beta_1} towards 1 and resolved the degeneracy. \cr
+non-zero value, which shrinks \eqn{\beta_1} towards 1 and resolves the degeneracy. \cr
 Default: \code{TRUE}.}
 
 \item{residual_type}{a string that specifies what kind of residual is returned as variance stabilized-value.
@@ -45,7 +45,8 @@ residuals, for the cost of introducing randomness. More details are available in
 of \code{\link[statmod:qresiduals]{statmod::qresiduals()}} and the corresponding publication by Dunn and Smyth (1996).}
 \item{\code{"pearson"}}{The Pearson residuals are defined as \eqn{res = (y - m) / sqrt(m + m^2 * theta)}.}
 }
-Default: \code{"randomized_quantile"}}
+The two above options are the most common choices, however you can use any \code{residual_type} supported by
+\code{\link[glmGamPoi:residuals.glmGamPoi]{glmGamPoi::residuals.glmGamPoi()}}. Default: \code{"randomized_quantile"}}
 
 \item{overdispersion, overdispersion_shrinkage, size_factors}{arguments that are passed to the underlying
 call to \code{\link[glmGamPoi:glm_gp]{glmGamPoi::glm_gp()}}. Default for each: \code{TRUE}.}
@@ -66,28 +67,28 @@ Fit an intercept Gamma-Poisson model that corrects for sequencing depth and retu
 as variance stabilized results for further downstream application, for which no proper count-based
 method exist or is performant enough (e.g., clustering, dimensionality reduction).
 }
+\details{
+Internally, this method uses the \code{glmGamPoi} package. The function goes through the following steps
+\enumerate{
+\item fit model using \code{\link[glmGamPoi:glm_gp]{glmGamPoi::glm_gp()}}
+\item plug in the trended overdispersion estimates
+\item call \code{\link[glmGamPoi:residuals.glmGamPoi]{glmGamPoi::residuals.glmGamPoi()}} to calculate the residuals.
+}
+}
 \examples{
- # Make example data
- n_genes <- 100
- n_cells <- 200
- beta0 <- rnorm(n = n_genes, mean = 2, sd = 0.3)
- beta1 <- rnorm(n = n_genes, mean = 0, sd = 2.5)
- X <- cbind(1, rep_len(c(-1,1), n_cells))
- sf <- rchisq(n = n_cells, df = 100)
- sf <- sf / mean(sf)
- Mu <- exp( cbind(beta0, beta1) \%*\% t(X) +
-       matrix(log(sf), nrow = n_genes, ncol = n_cells, byrow = TRUE) )
-
- # Generate count data
- Y <- matrix(rnbinom(n = n_genes * n_cells, mu = Mu, size = 0.1),
-             nrow = n_genes, ncol = n_cells)
+ # Load a single cell dataset
+ sce <- TENxPBMCData::TENxPBMCData("pbmc4k")
+ # Reduce size for this example
+ set.seed(1)
+ sce_red <- sce[sample(nrow(sce), 1000), 1:200]
+ assay(sce_red) <- as.matrix(assay(sce_red))
 
  # Apply VST
- vst <- gamPoiTransform(Y, verbose = TRUE)
+ vst <- gamPoiTransform(sce_red, verbose = TRUE)
 
- # Plot the PCA of the result
+ # Plot first two principal components
  vst_pca <- prcomp(t(vst), rank. = 2)
- plot(vst_pca$x, col = as.factor((X[,2] == -1)))
+ plot(vst_pca$x)
 
 }
 \references{

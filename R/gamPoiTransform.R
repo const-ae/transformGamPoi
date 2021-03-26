@@ -17,7 +17,7 @@
 #'   \eqn{\beta_0} as it may counter data artifacts. On the other side, Lause et al. (2020)
 #'   demonstrated that the estimating \eqn{\beta_0} and \eqn{\beta_1} together can be difficult. If
 #'   you still want to fit `sctransform`'s model, you can set the `ridge_penalty` argument to a
-#'   non-zero value, which shrinks \eqn{\beta_1} towards 1 and resolved the degeneracy. \cr
+#'   non-zero value, which shrinks \eqn{\beta_1} towards 1 and resolves the degeneracy. \cr
 #'   Default: `TRUE`.
 #' @param residual_type a string that specifies what kind of residual is returned as variance stabilized-value.
 #'   \describe{
@@ -31,7 +31,8 @@
 #'     of [`statmod::qresiduals()`] and the corresponding publication by Dunn and Smyth (1996).}
 #'     \item{`"pearson"`}{The Pearson residuals are defined as \eqn{res = (y - m) / sqrt(m + m^2 * theta)}.}
 #'   }
-#'   Default: `"randomized_quantile"`
+#'   The two above options are the most common choices, however you can use any `residual_type` supported by
+#'   [`glmGamPoi::residuals.glmGamPoi()`]. Default: `"randomized_quantile"`
 #' @param overdispersion,overdispersion_shrinkage,size_factors arguments that are passed to the underlying
 #'   call to [`glmGamPoi::glm_gp()`]. Default for each: `TRUE`.
 #' @param ridge_penalty another argument that is passed to [`glmGamPoi::glm_gp()`]. It is ignored if
@@ -42,7 +43,13 @@
 #'   Default: `FALSE`
 #' @param ... additional parameters passed to [`glmGamPoi::glm_gp()`].
 #'
-#'
+#' @details
+#'  Internally, this method uses the `glmGamPoi` package. The function goes through the following steps
+#'  \enumerate{
+#'    \item fit model using [`glmGamPoi::glm_gp()`]
+#'    \item plug in the trended overdispersion estimates
+#'    \item call [`glmGamPoi::residuals.glmGamPoi()`] to calculate the residuals.
+#'  }
 #'
 #' @seealso [`glmGamPoi::glm_gp()`], [`glmGamPoi::residuals.glmGamPoi()`], [`sctransform::vst()`],
 #'   [`statmod::qresiduals()`]
@@ -64,27 +71,19 @@
 #'   single-cell RNA-seq UMI data." bioRxiv (2020).
 #'
 #' @examples
-#'  # Make example data
-#'  n_genes <- 100
-#'  n_cells <- 200
-#'  beta0 <- rnorm(n = n_genes, mean = 2, sd = 0.3)
-#'  beta1 <- rnorm(n = n_genes, mean = 0, sd = 2.5)
-#'  X <- cbind(1, rep_len(c(-1,1), n_cells))
-#'  sf <- rchisq(n = n_cells, df = 100)
-#'  sf <- sf / mean(sf)
-#'  Mu <- exp( cbind(beta0, beta1) %*% t(X) +
-#'        matrix(log(sf), nrow = n_genes, ncol = n_cells, byrow = TRUE) )
-#'
-#'  # Generate count data
-#'  Y <- matrix(rnbinom(n = n_genes * n_cells, mu = Mu, size = 0.1),
-#'              nrow = n_genes, ncol = n_cells)
+#'  # Load a single cell dataset
+#'  sce <- TENxPBMCData::TENxPBMCData("pbmc4k")
+#'  # Reduce size for this example
+#'  set.seed(1)
+#'  sce_red <- sce[sample(nrow(sce), 1000), 1:200]
+#'  assay(sce_red) <- as.matrix(assay(sce_red))
 #'
 #'  # Apply VST
-#'  vst <- gamPoiTransform(Y, verbose = TRUE)
+#'  vst <- gamPoiTransform(sce_red, verbose = TRUE)
 #'
-#'  # Plot the PCA of the result
+#'  # Plot first two principal components
 #'  vst_pca <- prcomp(t(vst), rank. = 2)
-#'  plot(vst_pca$x, col = as.factor((X[,2] == -1)))
+#'  plot(vst_pca$x)
 #'
 #' @export
 gamPoiTransform <- function(data,
@@ -96,7 +95,10 @@ gamPoiTransform <- function(data,
                             ridge_penalty = 2,
                             return_fit = FALSE,
                             verbose = FALSE, ...){
-  residual_type <- residual_type[1]
+
+  # Allow any valid argument from glmGamPoi::residual.glmGamPoi()
+  residual_type <- match.arg(residual_type[1], c("deviance", "pearson", "randomized_quantile",
+                                              "working", "response"))
 
   if(inherits(data, "glmGamPoi")){
     fit <- data
