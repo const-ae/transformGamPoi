@@ -98,7 +98,7 @@ transformGamPoi <- function(data,
 
   # Allow any valid argument from glmGamPoi::residual.glmGamPoi()
   residual_type <- match.arg(residual_type[1], c("deviance", "pearson", "randomized_quantile",
-                                              "working", "response"))
+                                              "working", "response", "quantile"))
 
   if(inherits(data, "glmGamPoi")){
     fit <- data
