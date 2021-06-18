@@ -1,4 +1,4 @@
-test_that("transformGamPoi works", {
+test_that("residual_transform works", {
     n_genes <- 100
     n_cells <- 500
 
@@ -14,8 +14,8 @@ test_that("transformGamPoi works", {
     summary(matrixStats::rowMeans2(Y))
 
 
-    resids <- transformGamPoi(Y, verbose = TRUE)
-    res2 <- transformGamPoi(Y, offset_model = FALSE, verbose = TRUE, return_fit = TRUE)
+    resids <- residual_transform(Y, verbose = TRUE)
+    res2 <- residual_transform(Y, offset_model = FALSE, verbose = TRUE, return_fit = TRUE)
     expect_true(all(abs(res2$fit$Beta[,2] - 1) < 0.1))
 
 })
@@ -34,11 +34,11 @@ test_that("different input types work", {
     Y <- matrix(rnbinom(n = n_genes * n_cells, mu = Mu, size = 0.1), nrow = n_genes, ncol = n_cells)
 
     # matrix
-    res <- transformGamPoi(Y, verbose = TRUE, return_fit = TRUE, residual_type = "pearson")
+    res <- residual_transform(Y, verbose = TRUE, return_fit = TRUE, residual_type = "pearson")
     # glmGamPoi
-    res2 <- transformGamPoi(res$fit, residual_type = "pearson")
+    res2 <- residual_transform(res$fit, residual_type = "pearson")
     # SummarizedExperiment
-    res3 <- transformGamPoi(res$fit$data, residual_type = "pearson")
+    res3 <- residual_transform(res$fit$data, residual_type = "pearson")
 
     expect_equal(res$Residuals, res2)
     expect_equal(res$Residuals, res3)

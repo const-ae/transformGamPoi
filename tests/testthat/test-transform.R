@@ -121,7 +121,7 @@ test_that("overdispersion handling works", {
   Y <- matrix(rnbinom(n = n_genes * n_cells, mu = Mu, size = 0.1), nrow = n_genes, ncol = n_cells)
 
   fit <- glmGamPoi::glm_gp(Y, design = ~ 1, overdispersion_shrinkage = FALSE)
-  res1 <- acosh_transform(Y, overdispersion = "fitted")
+  res1 <- acosh_transform(Y, overdispersion = TRUE)
   res2 <- acosh_transform(Y, overdispersion = fit$overdispersions)
 
   expect_equal(res1, res2)
