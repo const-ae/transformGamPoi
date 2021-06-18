@@ -93,6 +93,7 @@ transformGamPoi <- function(data,
                             overdispersion = TRUE,
                             overdispersion_shrinkage = TRUE,
                             ridge_penalty = 2,
+                            on_disk = NULL,
                             return_fit = FALSE,
                             verbose = FALSE, ...){
 
@@ -100,19 +101,21 @@ transformGamPoi <- function(data,
   residual_type <- match.arg(residual_type[1], c("deviance", "pearson", "randomized_quantile",
                                               "working", "response", "quantile"))
 
+
   if(inherits(data, "glmGamPoi")){
     fit <- data
   }else if(offset_model){
+    counts <- .handle_data_parameter(data, on_disk, allow_sparse = FALSE  )
+    size_factors <- .handle_size_factors(size_factors, counts)
+
     fit <- glmGamPoi::glm_gp(data, design = ~ 1, size_factors = size_factors,
                              overdispersion = overdispersion,
                              overdispersion_shrinkage = overdispersion_shrinkage,
                              verbose = verbose, ...)
   }else{
-    # Calculate size factors
-    if(isTRUE(size_factors)){
-      size_factors <- matrixStats::colSums2(data)
-      size_factors <- size_factors / mean(size_factors)
-    }
+    counts <- .handle_data_parameter(data, on_disk, allow_sparse = FALSE  )
+    size_factors <- .handle_size_factors(size_factors, counts)
+
     log_sf <- log(size_factors)
     attr(ridge_penalty, "target") <- c(0, 1)
 

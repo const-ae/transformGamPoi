@@ -21,6 +21,30 @@ test_that("transformGamPoi works", {
 })
 
 
+test_that("different input types work", {
+    n_genes <- 100
+    n_cells <- 500
+
+    beta0 <- rnorm(n = n_genes, mean = 2, sd = 0.3)
+    sf <- rchisq(n = n_cells, df = 100)
+    sf <- sf / mean(sf)
+
+    Mu <- exp( beta0 %*% t(log(sf)) )
+
+    Y <- matrix(rnbinom(n = n_genes * n_cells, mu = Mu, size = 0.1), nrow = n_genes, ncol = n_cells)
+
+    # matrix
+    res <- transformGamPoi(Y, verbose = TRUE, return_fit = TRUE, residual_type = "pearson")
+    # glmGamPoi
+    res2 <- transformGamPoi(res$fit, residual_type = "pearson")
+    # SummarizedExperiment
+    res3 <- transformGamPoi(res$fit$data, residual_type = "pearson")
+
+    expect_equal(res$Residuals, res2)
+    expect_equal(res$Residuals, res3)
+})
+
+
 
 
 
