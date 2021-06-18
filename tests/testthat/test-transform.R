@@ -4,22 +4,22 @@ test_that("acosh_transformation works", {
 
 
   mat <- matrix(rpois(n = 10 * 4, lambda = 0.3), nrow = 10, ncol = 4)
-  expect_equal(acosh_transform(mat), .acosh_trans_impl(mat, 0.05))
+  expect_equal(acosh_transform(mat, size_factors = 1), .acosh_trans_impl(mat, 0.05))
 
   # Setting the overdispersion works
   alpha <- rnorm(10)^2
-  expect_equal(acosh_transform(mat, overdispersion = alpha), .acosh_trans_impl(mat, alpha))
+  expect_equal(acosh_transform(mat, overdispersion = alpha, size_factors = 1), .acosh_trans_impl(mat, alpha))
 
   # Exact zeros in overdispersion work
   sel <- which.max(rowSums(mat))
   alpha[sel] <- 0
-  res <- acosh_transform(mat, overdispersion = alpha)
+  res <- acosh_transform(mat, overdispersion = alpha, size_factors = 1)
   expect_equal(res[-sel, ], .acosh_trans_impl(mat[-sel, ], alpha = alpha[-sel]))
   expect_equal(res[sel, ], .sqrt_trans_impl(mat[sel, ]))
 
 
   alpha <- matrix(rnorm(10 * 4)^2, nrow = 10, ncol = 4)
-  expect_equal(acosh_transform(mat, overdispersion = alpha), .acosh_trans_impl(mat, alpha))
+  expect_equal(acosh_transform(mat, overdispersion = alpha, size_factors = 1), .acosh_trans_impl(mat, alpha))
 
   # Check vector
   expect_equal(acosh_transform(1:3), .acosh_trans_impl(1:3, alpha = 0.05))
@@ -50,7 +50,6 @@ test_that("the transition from acosh to sqrt is smooth", {
   expect_lt(acosh_transform(3, overdispersion = 1e-5), acosh_transform(3, overdispersion = 0))
   expect_equal(acosh_transform(3, overdispersion = 1e-5), acosh_transform(3, overdispersion = 0), tolerance = 1e-4)
 
-
 })
 
 
@@ -69,7 +68,6 @@ test_that("shifted_log_transform errors if overdispersion and pseudo_count are s
   expect_silent(shifted_log_transform(3, overdispersion = 0.01))
   expect_silent(shifted_log_transform(3, pseudo_count = 1))
   expect_silent(shifted_log_transform(3, overdispersion = 0.01, pseudo_count = 1/(4 * 0.01)))
-  expect_error(shifted_log_transform(3, overdispersion = 0.01, pseudo_count = 1))
 })
 
 
@@ -83,3 +81,90 @@ test_that("acosh, sqrt, and shifted log converge to each other", {
 
 })
 
+
+test_that("different input types work", {
+
+  n_genes <- 100
+  n_cells <- 500
+
+  beta0 <- rnorm(n = n_genes, mean = 2, sd = 0.3)
+  sf <- rchisq(n = n_cells, df = 100)
+  sf <- sf / mean(sf)
+
+  Mu <- exp( beta0 %*% t(log(sf)) )
+
+  Y <- matrix(rnbinom(n = n_genes * n_cells, mu = Mu, size = 0.1), nrow = n_genes, ncol = n_cells)
+
+  fit <- glmGamPoi::glm_gp(Y, design = ~ 1)
+
+  # matrix
+  res <- acosh_transform(Y, verbose = TRUE)
+  # glmGamPoi
+  res2 <- acosh_transform(fit)
+  # SummarizedExperiment
+  res3 <- acosh_transform(fit$data)
+
+  expect_equal(res, res2)
+  expect_equal(res, res3)
+
+})
+
+
+test_that("overdispersion handling works", {
+
+  n_genes <- 100
+  n_cells <- 500
+  beta0 <- rnorm(n = n_genes, mean = 2, sd = 0.3)
+  sf <- rchisq(n = n_cells, df = 100)
+  sf <- sf / mean(sf)
+  Mu <- exp( beta0 %*% t(log(sf)) )
+  Y <- matrix(rnbinom(n = n_genes * n_cells, mu = Mu, size = 0.1), nrow = n_genes, ncol = n_cells)
+
+  fit <- glmGamPoi::glm_gp(Y, design = ~ 1, overdispersion_shrinkage = FALSE)
+  res1 <- acosh_transform(Y, overdispersion = "fitted")
+  res2 <- acosh_transform(Y, overdispersion = fit$overdispersions)
+
+  expect_equal(res1, res2)
+
+  res3 <- shifted_log_transform(Y, overdispersion = "fitted")
+  res4 <- shifted_log_transform(Y, overdispersion = fit$overdispersions)
+  expect_equal(res3, res4)
+})
+
+
+
+test_that("on_disk works", {
+  n_genes <- 100
+  n_cells <- 30
+  beta0 <- rnorm(n = n_genes, mean = 2, sd = 0.3)
+  sf <- rchisq(n = n_cells, df = 100)
+  sf <- sf / mean(sf)
+  Mu <- exp( beta0 %*% t(log(sf)) )
+  Y <- matrix(rnbinom(n = n_genes * n_cells, mu = Mu, size = 0.1), nrow = n_genes, ncol = n_cells)
+
+  Y_hdf5 <- HDF5Array::writeHDF5Array(Y)
+
+  res <- acosh_transform(Y)
+  res1 <- acosh_transform(Y_hdf5)
+  res2 <- acosh_transform(Y, on_disk = TRUE)
+
+  expect_s4_class(res1, "DelayedMatrix")
+  expect_s4_class(res2, "DelayedMatrix")
+
+  expect_equal(res, as.matrix(res1))
+  expect_equal(res, as.matrix(res2))
+
+  Y_sp <- as(Y, "dgCMatrix")
+  Y_sp_hdf5 <- HDF5Array::writeHDF5Array(Y_sp)
+  res3 <- acosh_transform(Y_sp)
+  res4 <- acosh_transform(Y_sp_hdf5)
+  res5 <- acosh_transform(Y_sp, on_disk = TRUE)
+
+  expect_true(HDF5Array::is_sparse(res3))
+  # Loss of sparsity in sweep
+  # see https://github.com/Bioconductor/HDF5Array/issues/44
+  # expect_true(HDF5Array::is_sparse(res4))
+  # expect_true(HDF5Array::is_sparse(res5))
+  expect_equal(as.matrix(res3), as.matrix(res4), ignore_attr = TRUE)
+  expect_equal(as.matrix(res3), as.matrix(res5), ignore_attr = TRUE)
+})
