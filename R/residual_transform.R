@@ -107,7 +107,7 @@ residual_transform <- function(data,
     counts <- .handle_data_parameter(data, on_disk, allow_sparse = FALSE  )
     size_factors <- .handle_size_factors(size_factors, counts)
 
-    fit <- glmGamPoi::glm_gp(data, design = ~ 1, size_factors = size_factors,
+    fit <- glmGamPoi::glm_gp(counts, design = ~ 1, size_factors = size_factors,
                              overdispersion = overdispersion,
                              overdispersion_shrinkage = overdispersion_shrinkage,
                              verbose = verbose, ...)
@@ -118,7 +118,7 @@ residual_transform <- function(data,
     log_sf <- log(size_factors)
     attr(ridge_penalty, "target") <- c(0, 1)
 
-    fit <- glmGamPoi::glm_gp(data, design = ~ log_sf + 1, size_factors = 1,
+    fit <- glmGamPoi::glm_gp(counts, design = ~ log_sf + 1, size_factors = 1,
                              overdispersion = overdispersion,
                              overdispersion_shrinkage = overdispersion_shrinkage,
                              ridge_penalty = ridge_penalty,
