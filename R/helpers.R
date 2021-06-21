@@ -124,10 +124,10 @@ estimate_size_factors <- function(Y, method, verbose = FALSE){
 
   if(method == "poscounts"){
     # Accept any matrix-like object
-    log_geometric_means <- DelayedMatrixStats::rowMeans2(log(Y + 0.5))
+    log_geometric_means <- MatrixGenerics::rowMeans2(log(Y + 0.5))
     Y2 <- Y
     Y2[Y2 == 0] <- NA
-    sf <- exp(DelayedMatrixStats::colMedians(subtract_vector_from_each_column(log(Y2), log_geometric_means), na.rm = TRUE))
+    sf <- exp(MatrixGenerics::colMedians(subtract_vector_from_each_column(log(Y2), log_geometric_means), na.rm = TRUE))
   }else if(method == "deconvolution"){
     if(requireNamespace("scran", quietly = TRUE)){
       tryCatch({
@@ -143,7 +143,8 @@ estimate_size_factors <- function(Y, method, verbose = FALSE){
            "to calculate the size factors.", call. = FALSE)
     }
   }else if(method == "normed_sum"){
-    sf <- DelayedMatrixStats::colSums2(Y)
+    sf <- colSums2(Y)
+    # sf <- matrixStats::colSums2(as.matrix(Y))
   }else{
     stop("Unknown size factor estimation method: ", method)
   }

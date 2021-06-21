@@ -13,11 +13,19 @@ License: GPL-3
 Encoding: UTF-8
 Imports:
   glmGamPoi,
-  matrixStats,
-  DelayedArray
+  DelayedArray,
+  Matrix,
+  MatrixGenerics,
+  sparseMatrixStats,
+  DelayedMatrixStats,
+  SummarizedExperiment,
+  HDF5Array,
+  methods,
+  utils
 Suggests: 
     testthat,
-    TENxPBMCData
+    TENxPBMCData,
+    scran
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
 Config/testthat/edition: 3

@@ -10,8 +10,8 @@ test_that("residual_transform works", {
 
     Y <- matrix(rnbinom(n = n_genes * n_cells, mu = Mu, size = 0.1), nrow = n_genes, ncol = n_cells)
 
-    summary(matrixStats::colMeans2(Y))
-    summary(matrixStats::rowMeans2(Y))
+    summary(MatrixGenerics::colMeans2(Y))
+    summary(MatrixGenerics::rowMeans2(Y))
 
 
     resids <- residual_transform(Y, verbose = TRUE)
