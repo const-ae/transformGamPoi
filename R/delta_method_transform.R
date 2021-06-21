@@ -108,6 +108,7 @@ acosh_transform <- function(data, overdispersion = 0.05,
 
 
 #' @describeIn acosh_transform \eqn{1/sqrt(alpha) log(4 * alpha * x + 1)}
+#' @export
 shifted_log_transform <- function(data, overdispersion = 0.05, pseudo_count = 1/(4 * overdispersion),
                                   size_factors = TRUE, minimum_overdispersion = 0.001, on_disk = NULL, verbose = FALSE){
 

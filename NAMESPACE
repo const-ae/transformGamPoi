@@ -2,6 +2,7 @@
 
 export(acosh_transform)
 export(residual_transform)
+export(shifted_log_transform)
 export(transformGamPoi)
 importClassesFrom(Matrix,dgCMatrix)
 importFrom(MatrixGenerics,colSums2)
