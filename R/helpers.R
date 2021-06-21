@@ -179,3 +179,7 @@ estimate_size_factors <- function(Y, method, verbose = FALSE){
 }
 
 
+subtract_vector_from_each_column <- function(matrix, vector){
+  stopifnot(length(vector) == 1 || length(vector) == nrow(matrix))
+  matrix - vector
+}
