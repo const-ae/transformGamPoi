@@ -45,6 +45,22 @@ test_that("different input types work", {
 })
 
 
+test_that("overdisperion = 'global' works", {
+    n_genes <- 100
+    n_cells <- 500
+
+    beta0 <- rnorm(n = n_genes, mean = 2, sd = 0.3)
+    sf <- rchisq(n = n_cells, df = 100)
+    sf <- sf / mean(sf)
+
+    Mu <- exp( beta0 %*% t(log(sf)) )
+
+    Y <- matrix(rnbinom(n = n_genes * n_cells, mu = Mu, size = 1/0.1), nrow = n_genes, ncol = n_cells)
+
+    tmp <- transformGamPoi(Y, "rand", overdispersion = "global", verbose = TRUE, on_disk = FALSE, return_fit = TRUE)
+    expect_equal(tmp$fit$overdispersions, rep(0.1, n_genes), tolerance = 0.01)
+})
+
 
 
 
