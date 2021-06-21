@@ -30,10 +30,10 @@
       stop("Illegal argument type for on_disk. Can only handle 'NULL', 'TRUE', or 'FALSE'")
     }
   }else if(is(data, "SummarizedExperiment")){
-    data_mat <- .handle_data_parameter(SummarizedExperiment::assay(data), on_disk, allow_sparse)
+    data_mat <- .handle_data_parameter(SummarizedExperiment::assay(data, "counts"), on_disk, allow_sparse)
   }else if(canCoerce(data, "SummarizedExperiment")){
     se <- as(data, "SummarizedExperiment")
-    data_mat <- .handle_data_parameter(SummarizedExperiment::assay(se), on_disk, allow_sparse)
+    data_mat <- .handle_data_parameter(SummarizedExperiment::assay(se, "counts"), on_disk, allow_sparse)
   }else if(is(data, "dgCMatrix") || is(data, "dgTMatrix")) {
     if(isTRUE(on_disk)){
       data_mat <- HDF5Array::writeHDF5Array(data)
