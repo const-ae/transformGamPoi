@@ -78,7 +78,8 @@ Variance Stabilizing Transformation for Gamma Poisson Data
   assay(sce_red, "shifted_log") <- transformGamPoi(sce_red, "shifted_log")
 
   # Residual Based Variance Stabilizing Transformation
-  rq <- transformGamPoi(sce_red, transformation = "randomized_quantile", on_disk = FALSE, verbose = TRUE)
+  rq <- transformGamPoi(sce_red, transformation = "randomized_quantile", on_disk = FALSE,
+                        verbose = TRUE)
   pearson <- transformGamPoi(sce_red, transformation = "pearson", on_disk = FALSE, verbose = TRUE)
 
   plot(rowMeans2(counts(sce_red)), rowVars(assay(sce_red, "acosh")), log = "x")
