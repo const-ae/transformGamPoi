@@ -50,8 +50,8 @@
 #' @return a matrix (or a vector if the input is a vector) with the transformed values. If `return_fit = TRUE`,
 #'   a list is returned with two elements: `fit` and `Residuals`.
 #'
-#' @seealso [`glmGamPoi::glm_gp()`], [`glmGamPoi::residuals.glmGamPoi()`], [`sctransform::vst()`],
-#'   [`statmod::qresiduals()`]
+#' @seealso [`glmGamPoi::glm_gp()`], [`glmGamPoi::residuals.glmGamPoi()`], `sctransform::vst()`,
+#'   `statmod::qresiduals()`
 #'
 #' @references
 #'   Ahlmann-Eltze, Constantin, and Wolfgang Huber. "glmGamPoi: Fitting Gamma-Poisson Generalized Linear

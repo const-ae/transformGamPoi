@@ -118,6 +118,6 @@ Lause, Jan, Philipp Berens, and Dmitry Kobak. "Analytic Pearson residuals for no
 single-cell RNA-seq UMI data." bioRxiv (2020).
 }
 \seealso{
-\code{\link[glmGamPoi:glm_gp]{glmGamPoi::glm_gp()}}, \code{\link[glmGamPoi:residuals.glmGamPoi]{glmGamPoi::residuals.glmGamPoi()}}, \code{\link[sctransform:vst]{sctransform::vst()}},
-\code{\link[statmod:qresiduals]{statmod::qresiduals()}}
+\code{\link[glmGamPoi:glm_gp]{glmGamPoi::glm_gp()}}, \code{\link[glmGamPoi:residuals.glmGamPoi]{glmGamPoi::residuals.glmGamPoi()}}, \code{sctransform::vst()},
+\code{statmod::qresiduals()}
 }
