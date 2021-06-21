@@ -126,7 +126,7 @@ test_that("overdispersion handling works", {
 
   expect_equal(res1, res2)
 
-  res3 <- shifted_log_transform(Y, overdispersion = "fitted")
+  res3 <- shifted_log_transform(Y, overdispersion = TRUE)
   res4 <- shifted_log_transform(Y, overdispersion = fit$overdispersions)
   expect_equal(res3, res4)
 })
