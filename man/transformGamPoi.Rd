@@ -60,6 +60,9 @@ data structure.}
 \item{verbose}{boolean that decides if information about the individual steps are printed.
 Default: \code{FALSE}}
 }
+\value{
+a matrix (or a vector if the input is a vector) with the transformed values.
+}
 \description{
 Variance Stabilizing Transformation for Gamma Poisson Data
 }

@@ -28,7 +28,7 @@
 #'
 #' @describeIn  acosh_transform \eqn{1/sqrt(alpha)} acosh(2 * alpha * x + 1)
 #'
-#' @return a matrix with transformed values
+#' @return a matrix (or a vector if the input is a vector) with the transformed values.
 #'
 #' @export
 acosh_transform <- function(data, overdispersion = 0.05,

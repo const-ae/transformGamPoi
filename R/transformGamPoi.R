@@ -23,6 +23,8 @@
 #' @param ... additional parameters passed to [`acosh_transform`], [`shifted_log_transform`], or [`residual_transform`]
 #' @inheritParams glmGamPoi::glm_gp
 #'
+#' @return a matrix (or a vector if the input is a vector) with the transformed values.
+#'
 #' @seealso [`acosh_transform`], [`shifted_log_transform`], and [`residual_transform`]
 #'
 #' @references

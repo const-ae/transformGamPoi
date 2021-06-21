@@ -75,7 +75,7 @@ would just become \code{0}, thus here we apply the \code{minimum_overdispersion}
 this behavior.}
 }
 \value{
-a matrix with transformed values
+a matrix (or a vector if the input is a vector) with the transformed values.
 }
 \description{
 Delta method-based variance stabilizing transformation

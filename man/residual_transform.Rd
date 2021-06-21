@@ -68,6 +68,10 @@ Default: \code{FALSE}}
 
 \item{...}{additional parameters passed to \code{\link[glmGamPoi:glm_gp]{glmGamPoi::glm_gp()}}.}
 }
+\value{
+a matrix (or a vector if the input is a vector) with the transformed values. If \code{return_fit = TRUE},
+a list is returned with two elements: \code{fit} and \code{Residuals}.
+}
 \description{
 Fit an intercept Gamma-Poisson model that corrects for sequencing depth and return the residuals
 as variance stabilized results for further downstream application, for which no proper count-based
