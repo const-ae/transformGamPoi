@@ -64,17 +64,17 @@ transformGamPoi <- function(data,
   transformation <- match.arg(transformation)
   if(transformation == "acosh"){
     acosh_transform(data, overdispersion = overdispersion, size_factors = size_factors,
-                    on_disk = on_disk, verbose = versbose)
+                    on_disk = on_disk, verbose = verbose)
   }else if(transformation == "shifted_log"){
     shifted_log_transform(data, overdispersion = overdispersion, size_factors = size_factors,
-                    on_disk = on_disk, verbose = versbose, ...)
+                    on_disk = on_disk, verbose = verbose, ...)
   }else if(transformation == "randomized_quantile_residuals"){
     residual_transform(data, residual_type = "randomized_quantile",
                        overdispersion = overdispersion, size_factors = size_factors,
-                       on_disk = on_disk, verbose = versbose, ...)
+                       on_disk = on_disk, verbose = verbose, ...)
   }else if(transformation == "pearson_residuals"){
     residual_transform(data, residual_type = "pearson", overdispersion = overdispersion, size_factors = size_factors,
-                       on_disk = on_disk, verbose = versbose, ...)
+                       on_disk = on_disk, verbose = verbose, ...)
   }else{
     stop("Unsupported transformation of type: ", transformation, ". The available options are: \n",
          paste0(c("acosh", "shifted_log", "randomized_quantile_residuals", "pearson_residuals"), collapse = ", "))
