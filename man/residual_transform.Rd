@@ -86,19 +86,24 @@ Internally, this method uses the \code{glmGamPoi} package. The function goes thr
 }
 }
 \examples{
- # Load a single cell dataset
- sce <- TENxPBMCData::TENxPBMCData("pbmc4k")
- # Reduce size for this example
- set.seed(1)
- sce_red <- sce[sample(nrow(sce), 1000), 1:200]
- assay(sce_red) <- as.matrix(assay(sce_red))
+  # Load a single cell dataset
+  sce <- TENxPBMCData::TENxPBMCData("pbmc4k")
+  # Reduce size for this example
+  set.seed(1)
+  sce_red <- sce[sample(which(rowSums2(counts(sce)) > 0), 1000),
+                 sample(ncol(sce), 200)]
+  counts(sce_red) <- as.matrix(counts(sce_red))
 
- # Apply VST
- vst <- residual_transform(sce_red, verbose = TRUE)
+  # Residual Based Variance Stabilizing Transformation
+  rq <- residual_transform(sce_red, residual_type = "randomized_quantile",
+                           verbose = TRUE)
+  pearson <- residual_transform(sce_red, residual_type = "pearson", verbose = TRUE)
 
- # Plot first two principal components
- vst_pca <- prcomp(t(vst), rank. = 2)
- plot(vst_pca$x)
+  # Plot first two principal components
+  pearson_pca <- prcomp(t(pearson), rank. = 2)
+  rq_pca <- prcomp(t(rq), rank. = 2)
+  plot(rq_pca$x, asp = 1)
+  points(pearson_pca$x, col = "red")
 
 }
 \references{

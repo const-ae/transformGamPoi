@@ -44,19 +44,33 @@
 #'   single-cell RNA-seq UMI data." bioRxiv (2020).
 #'
 #' @examples
-#'  # Load a single cell dataset
-#'  sce <- TENxPBMCData::TENxPBMCData("pbmc4k")
-#'  # Reduce size for this example
-#'  set.seed(1)
-#'  sce_red <- sce[sample(nrow(sce), 1000), 1:200]
-#'  assay(sce_red) <- as.matrix(assay(sce_red))
+#'   # Load a single cell dataset
+#'   sce <- TENxPBMCData::TENxPBMCData("pbmc4k")
+#'   # Reduce size for this example
+#'   set.seed(1)
+#'   sce_red <- sce[sample(which(rowSums2(counts(sce)) > 0), 1000),
+#'                  sample(ncol(sce), 200)]
 #'
-#'  # Apply VST
-#'  vst <- residual_transform(sce_red, verbose = TRUE)
+#'   assay(sce_red, "acosh") <- transformGamPoi(sce_red, "acosh")
+#'   assay(sce_red, "shifted_log") <- transformGamPoi(sce_red, "shifted_log")
 #'
-#'  # Plot first two principal components
-#'  vst_pca <- prcomp(t(vst), rank. = 2)
-#'  plot(vst_pca$x)
+#'   # Residual Based Variance Stabilizing Transformation
+#'   rq <- transformGamPoi(sce_red, transformation = "randomized_quantile", on_disk = FALSE, verbose = TRUE)
+#'   pearson <- transformGamPoi(sce_red, transformation = "pearson", on_disk = FALSE, verbose = TRUE)
+#'
+#'   plot(rowMeans2(counts(sce_red)), rowVars(assay(sce_red, "acosh")), log = "x")
+#'   points(rowMeans2(counts(sce_red)), rowVars(assay(sce_red, "shifted_log")), col = "red")
+#'   points(rowMeans2(counts(sce_red)), rowVars(rq), col = "blue")
+#'
+#'
+#'   # Plot first two principal components
+#'   acosh_pca <- prcomp(t(assay(sce_red, "acosh")), rank. = 2)
+#'   rq_pca <- prcomp(t(rq), rank. = 2)
+#'   pearson_pca <- prcomp(t(pearson), rank. = 2)
+#'
+#'   plot(acosh_pca$x, asp = 1)
+#'   points(rq_pca$x, col = "blue")
+#'   points(pearson_pca$x, col = "green")
 #'
 #' @export
 transformGamPoi <- function(data,

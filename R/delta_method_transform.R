@@ -30,6 +30,24 @@
 #'
 #' @return a matrix (or a vector if the input is a vector) with the transformed values.
 #'
+#' @examples
+#'   # Load a single cell dataset
+#'   sce <- TENxPBMCData::TENxPBMCData("pbmc4k")
+#'   # Reduce size for this example
+#'   set.seed(1)
+#'   sce_red <- sce[sample(which(rowSums2(counts(sce)) > 0), 1000),
+#'                  sample(ncol(sce), 200)]
+#'
+#'   assay(sce_red, "acosh") <- acosh_transform(sce_red)
+#'   assay(sce_red, "shifted_log") <- shifted_log_transform(sce_red)
+#'   plot(rowMeans2(assay(sce_red, "acosh")), rowVars(assay(sce_red, "acosh")), log = "x")
+#'   points(rowMeans2(assay(sce_red, "shifted_log")), rowVars(assay(sce_red, "shifted_log")),
+#'          col = "red")
+#'
+#'   # Sqrt transformation
+#'   sqrt_dat <- acosh_transform(sce_red, overdispersion = 0, size_factor = 1)
+#'   plot(2 * sqrt(assay(sce_red))[,1], sqrt_dat[,1]); abline(0,1)
+#'
 #' @export
 acosh_transform <- function(data, overdispersion = 0.05,
                             size_factors = TRUE,
