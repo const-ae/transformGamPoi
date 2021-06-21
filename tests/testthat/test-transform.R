@@ -161,10 +161,8 @@ test_that("on_disk works", {
   res5 <- acosh_transform(Y_sp, on_disk = TRUE)
 
   expect_true(HDF5Array::is_sparse(res3))
-  # Loss of sparsity in sweep
-  # see https://github.com/Bioconductor/HDF5Array/issues/44
-  # expect_true(HDF5Array::is_sparse(res4))
-  # expect_true(HDF5Array::is_sparse(res5))
-  expect_equal(as.matrix(res3), as.matrix(res4), ignore_attr = TRUE)
-  expect_equal(as.matrix(res3), as.matrix(res5), ignore_attr = TRUE)
+  expect_true(HDF5Array::is_sparse(res4))
+  expect_true(HDF5Array::is_sparse(res5))
+  expect_equal(res3, as(res4, "dgCMatrix"), ignore_attr = TRUE)
+  expect_equal(res3, as(res5, "dgCMatrix"), ignore_attr = TRUE)
 })
