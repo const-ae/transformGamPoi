@@ -59,7 +59,7 @@ test_that("overdisperion = 'global' works", {
     Y <- matrix(rnbinom(n = n_genes * n_cells, mu = Mu, size = 1/0.1), nrow = n_genes, ncol = n_cells)
 
     tmp <- transformGamPoi(Y, "rand", overdispersion = "global", verbose = TRUE, on_disk = FALSE, return_fit = TRUE)
-    expect_equal(tmp$fit$overdispersions, rep(0.1, n_genes), tolerance = 0.05)
+    expect_equal(tmp$fit$overdispersions, rep(0.1, n_genes), tolerance = 0.1)
 })
 
 
