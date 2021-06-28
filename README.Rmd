@@ -16,6 +16,8 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
+R package that accompanies our paper 'Transformation and Preprocessing of Single-Cell RNA-Seq Data' (https://www.biorxiv.org/content/10.1101/2021.06.24.449781v1).
+
 `transformGamPoi` provides methods to stabilize the variance of single cell count data:
 
 * acosh transformation based on the delta method

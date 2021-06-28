@@ -4,6 +4,10 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
+R package that accompanies our paper ‘Transformation and Preprocessing
+of Single-Cell RNA-Seq Data’
+(<https://www.biorxiv.org/content/10.1101/2021.06.24.449781v1>).
+
 `transformGamPoi` provides methods to stabilize the variance of single
 cell count data:
 
@@ -127,7 +131,7 @@ sessionInfo()
 #>  [7] SummarizedExperiment_1.22.0 Biobase_2.52.0             
 #>  [9] GenomicRanges_1.44.0        GenomeInfoDb_1.28.0        
 #> [11] IRanges_2.26.0              S4Vectors_0.30.0           
-#> [13] BiocGenerics_0.38.0         MatrixGenerics_1.4.0       
+#> [13] BiocGenerics_0.38.0         MatrixGenerics_1.3.1       
 #> [15] matrixStats_0.59.0          transformGamPoi_0.1.0      
 #> 
 #> loaded via a namespace (and not attached):
