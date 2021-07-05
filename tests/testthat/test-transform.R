@@ -166,3 +166,33 @@ test_that("on_disk works", {
   expect_equal(res3, as(res4, "dgCMatrix"), ignore_attr = TRUE)
   expect_equal(res3, as(res5, "dgCMatrix"), ignore_attr = TRUE)
 })
+
+
+test_that("Clipping works for Pearson residuals", {
+
+  Y <- matrix(rnbinom(n = 10 * 30, mu = 3, size = 1/0.15), nrow = 10, ncol = 5)
+  resid1 <- residual_transform(Y, "pearson", clipping = FALSE)
+  resid2 <- residual_transform(Y, "pearson", clipping = TRUE)
+
+  clip <- sqrt(5)
+  large_clip <- resid1 > clip
+  small_clip <- resid1 < -clip
+
+  expect_equal(resid2[large_clip], rep(clip, sum(large_clip)))
+  expect_equal(resid2[small_clip], rep(-clip, sum(small_clip)))
+  expect_equal(resid2[! (large_clip | small_clip)],
+               resid1[! (large_clip | small_clip)])
+
+
+  resid3 <- residual_transform(Y, "pearson", clipping = 0.234)
+  clip <- 0.234
+  large_clip <- resid1 > clip
+  small_clip <- resid1 < -clip
+
+  expect_equal(resid3[large_clip], rep(clip, sum(large_clip)))
+  expect_equal(resid3[small_clip], rep(-clip, sum(small_clip)))
+  expect_equal(resid3[! (large_clip | small_clip)],
+               resid1[! (large_clip | small_clip)])
+
+})
+

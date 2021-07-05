@@ -7,6 +7,7 @@
 residual_transform(
   data,
   residual_type = c("randomized_quantile", "pearson"),
+  clipping = FALSE,
   overdispersion = 0.05,
   size_factors = TRUE,
   offset_model = TRUE,
@@ -37,6 +38,10 @@ of \code{\link[statmod:qresiduals]{statmod::qresiduals()}} and the corresponding
 }
 The two above options are the most common choices, however you can use any \code{residual_type} supported by
 \code{\link[glmGamPoi:residuals.glmGamPoi]{glmGamPoi::residuals.glmGamPoi()}}. Default: \code{"randomized_quantile"}}
+
+\item{clipping}{a single boolean or numeric value specifying that all residuals are in the range
+\verb{[-clipping, +clipping]}. If \code{clipping = TRUE}, we use the default of \code{clipping = sqrt(ncol(data))}
+which is the default behavior for \code{sctransform}. Default: \code{FALSE}, which means no clipping is applied.}
 
 \item{overdispersion, overdispersion_shrinkage, size_factors}{arguments that are passed to the underlying
 call to \code{\link[glmGamPoi:glm_gp]{glmGamPoi::glm_gp()}}. Default for each: \code{TRUE}.}

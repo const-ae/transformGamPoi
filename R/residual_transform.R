@@ -30,6 +30,9 @@
 #'   }
 #'   The two above options are the most common choices, however you can use any `residual_type` supported by
 #'   [`glmGamPoi::residuals.glmGamPoi()`]. Default: `"randomized_quantile"`
+#' @param clipping a single boolean or numeric value specifying that all residuals are in the range
+#'   `[-clipping, +clipping]`. If `clipping = TRUE`, we use the default of `clipping = sqrt(ncol(data))`
+#'   which is the default behavior for `sctransform`. Default: `FALSE`, which means no clipping is applied.
 #' @param overdispersion,overdispersion_shrinkage,size_factors arguments that are passed to the underlying
 #'   call to [`glmGamPoi::glm_gp()`]. Default for each: `TRUE`.
 #' @param ridge_penalty another argument that is passed to [`glmGamPoi::glm_gp()`]. It is ignored if
@@ -67,7 +70,7 @@
 #'   models." (2020)
 #'
 #'   Lause, Jan, Philipp Berens, and Dmitry Kobak. "Analytic Pearson residuals for normalization of
-#'   single-cell RNA-seq UMI data." bioRxiv (2020).
+#'   single-cell RNA-seq UMI data." bioRxiv (2021).
 #'
 #' @examples
 #'   # Load a single cell dataset
@@ -92,6 +95,7 @@
 #' @export
 residual_transform <- function(data,
                                residual_type = c("randomized_quantile", "pearson"),
+                               clipping = FALSE,
                                overdispersion = 0.05,
                                size_factors = TRUE,
                                offset_model = TRUE,
@@ -140,6 +144,7 @@ residual_transform <- function(data,
   if(verbose){message("Calculate ", residual_type, " residuals")}
 
   resid <- stats::residuals(fit, type = residual_type)
+  resid <- clip_residuals(resid, clipping)
   resid <- .convert_to_output(resid, data)
 
   if(! return_fit){
@@ -147,6 +152,27 @@ residual_transform <- function(data,
   }else{
     list(Residuals = resid, fit = fit)
   }
+}
+
+
+
+clip_residuals <- function(resid, clipping){
+  if(isFALSE(clipping)){
+    # Do nothing
+  }else{
+    if(isTRUE(clipping)){
+      clipping <- sqrt(ncol(resid))
+    }
+    if(! is.numeric(clipping) || length(clipping) != 1){
+      stop("Clipping has to be 'TRUE'/'FALSE' or a single numeric value.")
+    }
+    if(clipping < 0){
+      stop("'clipping = ", clipping, "' is negative. Only positive values are allowed.")
+    }
+    resid[resid > clipping] <- clipping
+    resid[resid < -clipping] <- -clipping
+  }
+  resid
 }
 
 
