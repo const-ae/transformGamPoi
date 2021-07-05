@@ -125,7 +125,7 @@ Hafemeister, Christoph, and Rahul Satija. "Analyzing scRNA-seq data with the sct
 models." (2020)
 
 Lause, Jan, Philipp Berens, and Dmitry Kobak. "Analytic Pearson residuals for normalization of
-single-cell RNA-seq UMI data." bioRxiv (2020).
+single-cell RNA-seq UMI data." bioRxiv (2021).
 }
 \seealso{
 \code{\link[glmGamPoi:glm_gp]{glmGamPoi::glm_gp()}}, \code{\link[glmGamPoi:residuals.glmGamPoi]{glmGamPoi::residuals.glmGamPoi()}}, \code{sctransform::vst()},
