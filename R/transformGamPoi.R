@@ -79,6 +79,14 @@ transformGamPoi <- function(data,
                             overdispersion = 0.05, size_factors = TRUE, ..., on_disk = NULL, verbose = FALSE){
 
   transformation <- match.arg(transformation)
+
+  dots <- list(...)
+  if(! is.null(dots$residual_type)){
+    stop("You specified 'residual_type = \"", dots$residual_type, "\"'. However, ",
+         "for the 'transformGamPoi()' function rather specify 'transformation = \"",
+         "randomized_quantile_residuals\"' or 'transformation = \"pearson_residuals\"'.")
+  }
+
   if(transformation == "acosh"){
     acosh_transform(data, overdispersion = overdispersion, size_factors = size_factors,
                     on_disk = on_disk, verbose = verbose)

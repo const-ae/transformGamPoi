@@ -63,5 +63,11 @@ test_that("overdisperion = 'global' works", {
 })
 
 
+test_that("transformGamPoi errors if 'residual_type' is specified", {
 
+    set.seed(1)
+    Y <- matrix(rnbinom(n = 24, mu = 3, size = 1/0.1), nrow = 3, ncol = 8)
+    expect_error(transformGamPoi(Y, residual_type = "pearson"))
+
+})
 
