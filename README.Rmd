@@ -55,7 +55,7 @@ assay(sce_red, "shifted_log") <- shifted_log_transform(sce_red, overdispersion =
 # For large datasets, we can also do the processing without 
 # loading the full dataset into memory (on_disk = TRUE)
 assay(sce_red, "rand_quant") <- residual_transform(sce_red, "randomized_quantile", on_disk = FALSE)
-assay(sce_red, "pearson") <- residual_transform(sce_red, "pearson", on_disk = FALSE)
+assay(sce_red, "pearson") <- residual_transform(sce_red, "pearson", clipping = TRUE, on_disk = FALSE)
 ```
 
 Finally, we compare the variance of the genes after transformation using a scatter plot
