@@ -6,8 +6,7 @@ output: github_document
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  fig.path = "man/figures/README-",
-  out.width = "100%"
+  fig.path = "man/figures/README-"
 )
 ```
 
@@ -62,13 +61,13 @@ Finally, we compare the variance of the genes after transformation using a scatt
 ```{r plotMeanVar, warning=FALSE}
 par(pch = 20, cex = 1.15)
 mus <- rowMeans2(counts(sce_red))
-plot(mus, rowVars(assay(sce_red, "acosh")), log = "x", col = "black",
+plot(mus, rowVars(assay(sce_red, "acosh")), log = "x", col = "#1b9e77aa", cex = 0.6,
      xlab =  "Log Gene Means", ylab = "Variance after transformation")
-points(mus, rowVars(assay(sce_red, "shifted_log")), col = "red")
-points(mus, rowVars(assay(sce_red, "pearson")), col = "green")
-points(mus, rowVars(assay(sce_red, "rand_quant")), col = "blue")
+points(mus, rowVars(assay(sce_red, "shifted_log")), col = "#d95f02aa", cex = 0.6)
+points(mus, rowVars(assay(sce_red, "pearson")), col = "#7570b3aa", cex = 0.6)
+points(mus, rowVars(assay(sce_red, "rand_quant")), col = "#e7298aaa", cex = 0.6)
 legend("topleft", legend = c("acosh", "shifted log", "Rand. Quantile Resid.", "Pearson Resid."),
-       col = c("black", "red", "blue", "green"), pch = 16)
+       col = c("#1b9e77", "#d95f02", "#7570b3", "#e7298a"), pch = 16)
 ```
 
 # See also

@@ -63,7 +63,7 @@ assay(sce_red, "shifted_log") <- shifted_log_transform(sce_red, overdispersion =
 # For large datasets, we can also do the processing without 
 # loading the full dataset into memory (on_disk = TRUE)
 assay(sce_red, "rand_quant") <- residual_transform(sce_red, "randomized_quantile", on_disk = FALSE)
-assay(sce_red, "pearson") <- residual_transform(sce_red, "pearson", on_disk = FALSE)
+assay(sce_red, "pearson") <- residual_transform(sce_red, "pearson", clipping = TRUE, on_disk = FALSE)
 ```
 
 Finally, we compare the variance of the genes after transformation using
@@ -72,16 +72,16 @@ a scatter plot
 ``` r
 par(pch = 20, cex = 1.15)
 mus <- rowMeans2(counts(sce_red))
-plot(mus, rowVars(assay(sce_red, "acosh")), log = "x", col = "black",
+plot(mus, rowVars(assay(sce_red, "acosh")), log = "x", col = "#1b9e77aa", cex = 0.6,
      xlab =  "Log Gene Means", ylab = "Variance after transformation")
-points(mus, rowVars(assay(sce_red, "shifted_log")), col = "red")
-points(mus, rowVars(assay(sce_red, "pearson")), col = "green")
-points(mus, rowVars(assay(sce_red, "rand_quant")), col = "blue")
+points(mus, rowVars(assay(sce_red, "shifted_log")), col = "#d95f02aa", cex = 0.6)
+points(mus, rowVars(assay(sce_red, "pearson")), col = "#7570b3aa", cex = 0.6)
+points(mus, rowVars(assay(sce_red, "rand_quant")), col = "#e7298aaa", cex = 0.6)
 legend("topleft", legend = c("acosh", "shifted log", "Rand. Quantile Resid.", "Pearson Resid."),
-       col = c("black", "red", "blue", "green"), pch = 16)
+       col = c("#1b9e77", "#d95f02", "#7570b3", "#e7298a"), pch = 16)
 ```
 
-<img src="man/figures/README-plotMeanVar-1.png" width="100%" />
+![](man/figures/README-plotMeanVar-1.png)<!-- -->
 
 # See also
 
@@ -131,8 +131,8 @@ sessionInfo()
 #>  [7] SummarizedExperiment_1.22.0 Biobase_2.52.0             
 #>  [9] GenomicRanges_1.44.0        GenomeInfoDb_1.28.0        
 #> [11] IRanges_2.26.0              S4Vectors_0.30.0           
-#> [13] BiocGenerics_0.38.0         MatrixGenerics_1.3.1       
-#> [15] matrixStats_0.59.0          transformGamPoi_0.1.0      
+#> [13] BiocGenerics_0.38.0         MatrixGenerics_1.5.1       
+#> [15] matrixStats_0.59.0          transformGamPoi_0.1.2      
 #> 
 #> loaded via a namespace (and not attached):
 #>  [1] httr_1.4.2                    bit64_4.0.5                  
@@ -161,7 +161,7 @@ sessionInfo()
 #> [47] compiler_4.1.0                rlang_0.4.11                 
 #> [49] grid_4.1.0                    RCurl_1.98-1.3               
 #> [51] rhdf5filters_1.4.0            rappdirs_0.3.3               
-#> [53] glmGamPoi_1.5.1               bitops_1.0-7                 
+#> [53] glmGamPoi_1.5.2               bitops_1.0-7                 
 #> [55] rmarkdown_2.9                 ExperimentHub_2.0.0          
 #> [57] DBI_1.1.1                     curl_4.3.1                   
 #> [59] R6_2.5.0                      knitr_1.33                   
