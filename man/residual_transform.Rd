@@ -43,8 +43,18 @@ The two above options are the most common choices, however you can use any \code
 \verb{[-clipping, +clipping]}. If \code{clipping = TRUE}, we use the default of \code{clipping = sqrt(ncol(data))}
 which is the default behavior for \code{sctransform}. Default: \code{FALSE}, which means no clipping is applied.}
 
-\item{overdispersion, overdispersion_shrinkage, size_factors}{arguments that are passed to the underlying
-call to \code{\link[glmGamPoi:glm_gp]{glmGamPoi::glm_gp()}}. Default for each: \code{TRUE}.}
+\item{overdispersion}{the simplest count model is the Poisson model. However, the Poisson model
+assumes that \eqn{variance = mean}. For many applications this is too rigid and the Gamma-Poisson
+allows a more flexible mean-variance relation (\eqn{variance = mean + mean^2 * overdispersion}). \cr
+\code{overdispersion} can either be
+\itemize{
+\item a single boolean that indicates if an overdispersion is estimated for each gene.
+\item a numeric vector of length \code{nrow(data)} fixing the overdispersion to those values.
+\item the string \code{"global"} to indicate that one dispersion is fit across all genes.
+}
+Note that \code{overdispersion = 0} and \code{overdispersion = FALSE} are equivalent and both reduce
+the Gamma-Poisson to the classical Poisson model. Default: \code{0.05} which is roughly the
+overdispersion observed on ostensibly homogeneous cell lines.}
 
 \item{offset_model}{boolean to decide if \eqn{\beta_1} in \eqn{y = \beta_0 + \beta_1 log(sf)},
 is set to 1 (i.e., treating the log of the size factors as an offset ) or is estimated per gene.
@@ -56,6 +66,9 @@ demonstrated that the estimating \eqn{\beta_0} and \eqn{\beta_1} together can be
 you still want to fit \code{sctransform}'s model, you can set the \code{ridge_penalty} argument to a
 non-zero value, which shrinks \eqn{\beta_1} towards 1 and resolves the degeneracy. \cr
 Default: \code{TRUE}.}
+
+\item{overdispersion_shrinkage, size_factors}{arguments that are passed to the underlying
+call to \code{\link[glmGamPoi:glm_gp]{glmGamPoi::glm_gp()}}. Default for each: \code{TRUE}.}
 
 \item{ridge_penalty}{another argument that is passed to \code{\link[glmGamPoi:glm_gp]{glmGamPoi::glm_gp()}}. It is ignored if
 \code{offset_model = TRUE}. Default: \code{2}.}

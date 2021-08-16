@@ -33,7 +33,7 @@
 #' @param clipping a single boolean or numeric value specifying that all residuals are in the range
 #'   `[-clipping, +clipping]`. If `clipping = TRUE`, we use the default of `clipping = sqrt(ncol(data))`
 #'   which is the default behavior for `sctransform`. Default: `FALSE`, which means no clipping is applied.
-#' @param overdispersion,overdispersion_shrinkage,size_factors arguments that are passed to the underlying
+#' @param overdispersion_shrinkage,size_factors arguments that are passed to the underlying
 #'   call to [`glmGamPoi::glm_gp()`]. Default for each: `TRUE`.
 #' @param ridge_penalty another argument that is passed to [`glmGamPoi::glm_gp()`]. It is ignored if
 #'   `offset_model = TRUE`. Default: `2`.
