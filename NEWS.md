@@ -3,6 +3,8 @@
 * Add clipping functionality to `residual_transform()`
 * Add check against `residual_type` argument in `transformGamPoi()` 
 * Fix bug in `acosh_transform()` related to sparse input and `on_disk = FALSE`
+* Change default of `overdispersion_shrinkage` to `TRUE` if `overdispersion = TRUE` 
+for `acosh_transform()` and `shifted_log_transform()`
 
 # transformGamPoi 0.1.0
 
