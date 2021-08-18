@@ -63,6 +63,9 @@ acosh_transform <- function(data, overdispersion = 0.05,
   }
 
   if(all(isTRUE(overdispersion)) || all(overdispersion == "global")){
+    if(HDF5Array::is_sparse(counts)){
+      counts <- .handle_data_parameter(data, on_disk, allow_sparse = FALSE)
+    }
     fit <- glmGamPoi::glm_gp(counts, design = ~ 1, size_factors = size_factors,
                              overdispersion = TRUE,
                              overdispersion_shrinkage = FALSE,
@@ -121,6 +124,9 @@ shifted_log_transform <- function(data, overdispersion = 0.05, pseudo_count = 1/
   }
 
   if(all(isTRUE(overdispersion)) || all(overdispersion == "global")){
+    if(HDF5Array::is_sparse(counts)){
+      counts <- .handle_data_parameter(data, on_disk, allow_sparse = FALSE)
+    }
     fit <- glmGamPoi::glm_gp(counts, design = ~ 1, size_factors = size_factors,
                              overdispersion = TRUE,
                              overdispersion_shrinkage = FALSE,

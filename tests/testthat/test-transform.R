@@ -42,6 +42,10 @@ test_that("acosh_transformation works for sparse input", {
   expect_equal(acosh_transform(sp_mat, overdispersion = alpha),
                as(acosh_transform(mat, overdispersion = alpha), "dgCMatrix"))
 
+  # Sparse input works in combination with 'overdispersion = TRUE' if 'on_disk = FALSE'
+  expect_equal(acosh_transform(sp_mat, overdispersion = TRUE, on_disk = FALSE),
+               acosh_transform(mat, overdispersion = TRUE), ignore_attr = TRUE)
+
 })
 
 
