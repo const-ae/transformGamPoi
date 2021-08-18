@@ -14,8 +14,8 @@ test_that("residual_transform works", {
     summary(MatrixGenerics::rowMeans2(Y))
 
 
-    resids <- residual_transform(Y, verbose = TRUE)
-    res2 <- residual_transform(Y, offset_model = FALSE, verbose = TRUE, return_fit = TRUE)
+    resids <- residual_transform(Y, verbose = FALSE)
+    res2 <- residual_transform(Y, offset_model = FALSE, verbose = FALSE, return_fit = TRUE)
     expect_true(all(abs(res2$fit$Beta[,2] - 1) < 0.1))
 
 })
@@ -34,7 +34,7 @@ test_that("different input types work", {
     Y <- matrix(rnbinom(n = n_genes * n_cells, mu = Mu, size = 0.1), nrow = n_genes, ncol = n_cells)
 
     # matrix
-    res <- residual_transform(Y, verbose = TRUE, return_fit = TRUE, residual_type = "pearson")
+    res <- residual_transform(Y, verbose = FALSE, return_fit = TRUE, residual_type = "pearson")
     # glmGamPoi
     res2 <- residual_transform(res$fit, residual_type = "pearson")
     # SummarizedExperiment
@@ -58,7 +58,7 @@ test_that("overdisperion = 'global' works", {
 
     Y <- matrix(rnbinom(n = n_genes * n_cells, mu = Mu, size = 1/0.1), nrow = n_genes, ncol = n_cells)
 
-    tmp <- transformGamPoi(Y, "rand", overdispersion = "global", verbose = TRUE, on_disk = FALSE, return_fit = TRUE)
+    tmp <- transformGamPoi(Y, "rand", overdispersion = "global", verbose = FALSE, on_disk = FALSE, return_fit = TRUE)
     expect_equal(tmp$fit$overdispersions, rep(0.1, n_genes), tolerance = 0.1)
 })
 
