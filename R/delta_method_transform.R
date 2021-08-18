@@ -25,6 +25,8 @@
 #'   \eqn{2 * sqrt(x)} for `overdispersion == 0`. However, the `shifted_log_transform`
 #'   would just become `0`, thus here we apply the `minimum_overdispersion` to avoid
 #'   this behavior.
+#' @param ... additional parameters for `glmGamPoi::glm_gp()` which is called in
+#'   case `overdispersion = TRUE`.
 #'
 #' @describeIn  acosh_transform \eqn{1/sqrt(alpha)} acosh(2 * alpha * x + 1)
 #'
@@ -51,6 +53,7 @@
 #' @export
 acosh_transform <- function(data, overdispersion = 0.05,
                             size_factors = TRUE,
+                            ...,
                             on_disk = NULL,
                             verbose = FALSE){
 
@@ -66,10 +69,21 @@ acosh_transform <- function(data, overdispersion = 0.05,
     if(HDF5Array::is_sparse(counts)){
       counts <- .handle_data_parameter(data, on_disk, allow_sparse = FALSE)
     }
+    dots <- list(...)
+    overdispersion_shrinkage <- if("overdispersion_shrinkage" %in% names(dots)){
+      dots[["overdispersion_shrinkage"]]
+    }else{
+      TRUE
+    }
     fit <- glmGamPoi::glm_gp(counts, design = ~ 1, size_factors = size_factors,
-                             overdispersion = TRUE,
-                             overdispersion_shrinkage = FALSE,
+                             overdispersion = overdispersion,
+                             overdispersion_shrinkage = overdispersion_shrinkage,
                              verbose = verbose)
+    if(overdispersion_shrinkage){
+      # Use the dispersion trend when calculating the residuals
+      fit$overdispersion_shrinkage_list$original_overdispersions <- fit$overdispersions
+      fit$overdispersions <- fit$overdispersion_shrinkage_list$dispersion_trend
+    }
     overdispersion <- fit$overdispersions
   }else{
     overdispersion <- .handle_overdispersion(overdispersion, counts)
@@ -112,8 +126,14 @@ acosh_transform <- function(data, overdispersion = 0.05,
 
 #' @describeIn acosh_transform \eqn{1/sqrt(alpha) log(4 * alpha * x + 1)}
 #' @export
-shifted_log_transform <- function(data, overdispersion = 0.05, pseudo_count = 1/(4 * overdispersion),
-                                  size_factors = TRUE, minimum_overdispersion = 0.001, on_disk = NULL, verbose = FALSE){
+shifted_log_transform <- function(data,
+                                  overdispersion = 0.05,
+                                  pseudo_count = 1/(4 * overdispersion),
+                                  size_factors = TRUE,
+                                  minimum_overdispersion = 0.001,
+                                  ...,
+                                  on_disk = NULL,
+                                  verbose = FALSE){
 
   counts <- .handle_data_parameter(data, on_disk, allow_sparse = TRUE)
 
@@ -127,11 +147,20 @@ shifted_log_transform <- function(data, overdispersion = 0.05, pseudo_count = 1/
     if(HDF5Array::is_sparse(counts)){
       counts <- .handle_data_parameter(data, on_disk, allow_sparse = FALSE)
     }
+    dots <- list(...)
+    overdispersion_shrinkage <- if("overdispersion_shrinkage" %in% names(dots)){
+      dots[["overdispersion_shrinkage"]]
+    }else{
+      TRUE
+    }
     fit <- glmGamPoi::glm_gp(counts, design = ~ 1, size_factors = size_factors,
-                             overdispersion = TRUE,
-                             overdispersion_shrinkage = FALSE,
+                             overdispersion = overdispersion,
+                             overdispersion_shrinkage = overdispersion_shrinkage,
                              verbose = verbose)
-    data <- fit
+    if(overdispersion_shrinkage){
+      fit$overdispersion_shrinkage_list$original_overdispersions <- fit$overdispersions
+      fit$overdispersions <- fit$overdispersion_shrinkage_list$dispersion_trend
+    }
     overdispersion <- fit$overdispersions
   }else{
     overdispersion <- 1/(4 * pseudo_count)

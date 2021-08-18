@@ -9,6 +9,7 @@ acosh_transform(
   data,
   overdispersion = 0.05,
   size_factors = TRUE,
+  ...,
   on_disk = NULL,
   verbose = FALSE
 )
@@ -19,6 +20,7 @@ shifted_log_transform(
   pseudo_count = 1/(4 * overdispersion),
   size_factors = TRUE,
   minimum_overdispersion = 0.001,
+  ...,
   on_disk = NULL,
   verbose = FALSE
 )
@@ -54,6 +56,9 @@ simple methods and can lead to suboptimal results. For the best performance, I r
 to separately install the \code{scran} package from Bioconductor for this method to work.
 Also note that \code{size_factors = 1} and \code{size_factors = FALSE} are equivalent. If only a single gene is given,
 no size factor is estimated (ie. \code{size_factors = 1}). Default: \code{"normed_sum"}.}
+
+\item{...}{additional parameters for \code{glmGamPoi::glm_gp()} which is called in
+case \code{overdispersion = TRUE}.}
 
 \item{on_disk}{a boolean that indicates if the dataset is loaded into memory or if it is kept on disk
 to reduce the memory usage. Processing in memory can be significantly faster than on disk.

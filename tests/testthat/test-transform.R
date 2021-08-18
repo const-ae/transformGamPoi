@@ -42,10 +42,23 @@ test_that("acosh_transformation works for sparse input", {
   expect_equal(acosh_transform(sp_mat, overdispersion = alpha),
                as(acosh_transform(mat, overdispersion = alpha), "dgCMatrix"))
 
-  # Sparse input works in combination with 'overdispersion = TRUE' if 'on_disk = FALSE'
+
+})
+
+test_that("acosh_transform calling to glm_gp works as expected", {
+  mat <- matrix(rpois(n = 10 * 4, lambda = 0.3), nrow = 10, ncol = 4)
+  sp_mat <- as(mat, "dgCMatrix")
+
   expect_equal(acosh_transform(sp_mat, overdispersion = TRUE, on_disk = FALSE),
                acosh_transform(mat, overdispersion = TRUE), ignore_attr = TRUE)
 
+  fit <- glmGamPoi::glm_gp(mat, overdispersion_shrinkage = TRUE)
+  expect_equal(acosh_transform(mat, overdispersion = TRUE),
+               acosh_transform(mat, overdispersion = fit$overdispersion_shrinkage_list$dispersion_trend), ignore_attr = TRUE)
+
+  fit <- glmGamPoi::glm_gp(mat, overdispersion_shrinkage = FALSE)
+  expect_equal(acosh_transform(mat, overdispersion = TRUE, overdispersion_shrinkage = FALSE),
+               acosh_transform(mat, overdispersion = fit$overdispersions), ignore_attr = TRUE)
 })
 
 
@@ -124,15 +137,26 @@ test_that("overdispersion handling works", {
   Mu <- exp( beta0 %*% t(log(sf)) )
   Y <- matrix(rnbinom(n = n_genes * n_cells, mu = Mu, size = 0.1), nrow = n_genes, ncol = n_cells)
 
-  fit <- glmGamPoi::glm_gp(Y, design = ~ 1, overdispersion_shrinkage = FALSE)
+  fit <- glmGamPoi::glm_gp(Y, design = ~ 1)
   res1 <- acosh_transform(Y, overdispersion = TRUE)
-  res2 <- acosh_transform(Y, overdispersion = fit$overdispersions)
+  res2 <- acosh_transform(Y, overdispersion = fit$overdispersion_shrinkage_list$dispersion_trend)
 
   expect_equal(res1, res2)
 
   res3 <- shifted_log_transform(Y, overdispersion = TRUE)
-  res4 <- shifted_log_transform(Y, overdispersion = fit$overdispersions)
+  res4 <- shifted_log_transform(Y, overdispersion = fit$overdispersion_shrinkage_list$dispersion_trend)
   expect_equal(res3, res4)
+
+  fit <- glmGamPoi::glm_gp(Y, design = ~ 1, overdispersion_shrinkage = FALSE)
+  res5 <- acosh_transform(Y, overdispersion = TRUE)
+  res6 <- acosh_transform(Y, overdispersion = fit$overdispersion_shrinkage_list$dispersion_trend)
+
+  expect_equal(res5, res6)
+
+  res7 <- shifted_log_transform(Y, overdispersion = TRUE)
+  res8 <- shifted_log_transform(Y, overdispersion = fit$overdispersion_shrinkage_list$dispersion_trend)
+  expect_equal(res7, res8)
+
 })
 
 
