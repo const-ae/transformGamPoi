@@ -1,0 +1,148 @@
+---
+title: "transformGamPoi Quickstart"
+author: Constantin Ahlmann-Eltze
+date: "`r Sys.Date()`"
+output: BiocStyle::html_document
+vignette: >
+  %\VignetteIndexEntry{glmGamPoi Quickstart}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+set.seed(1)
+par(cex = 1.5)
+```
+
+
+_transformGamPoi_ provides variance stabilizing transformations to handle the heteroskedasticity of count data. For example single-cell RNA sequencing counts vary more for highly expressed genes than for lowly expressed genes. However, many classical statistical methods perform best on data with uniform variance. This package provides a set of different variance stabilizing transformations to make the subsequent application of generic statistical methods more palatable.
+
+
+# Installation
+
+You can install _transformGamPoi_ from [Bioconductor](https://bioconductor.org/packages/transformGamPoi/) after it has been accepted using the following command
+
+```r
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+BiocManager::install("transformGamPoi")
+```
+
+In the mean time or to get the latest development version, you can install _transformGamPoi_ directly from [GitHub](https://github.com/const-ae/transformGamPoi) using the [devtools](https://devtools.r-lib.org/) package
+
+```r
+# install.packages("devtools")
+devtools::install_github("const-ae/transformGamPoi")
+```
+
+# Example
+
+The functions in _transformGamPoi_ take any kind of matrix-like object (e.g., `matrix`, `dgCMatrix`, `DelayedArray`, `SummarizedExperiment`, `SingleCellExperiment`) and return the corresponding transformed matrix objects. For sparse input the functions try to preserve sparsity. For container objects like `SummarizedExperiment`, _transformGamPoi_ extracts the `"counts"` assay and returns an object of the same type as that `"counts"` assay.
+
+We start by loading the package to make the transformation functions available in our R session:
+```{r setup}
+library(transformGamPoi)
+```
+
+In the next step, we load some example data. Here, we use a single-cell RNA sequencing experiment of 4096 blood cells. For convenience, we subset the data to 1,000 genes and 5,00 cells
+```{r loadData}
+# Load the 'TENxPBMCData' as a SingleCellExperiment object
+sce <- TENxPBMCData::TENxPBMCData("pbmc4k")
+# Subset the data to 1,000 x 500 random genes and cells
+sce <- sce[sample(nrow(sce), 1000), sample(ncol(sce), 500)]
+```
+If we take a look at the stored counts (mainly zeros) stored as a sparse matrix of type `DelayedMatrix`. Fortunately, the precise meaning of that storage type is not important, because _transformGamPoi_ handles this automatically.
+```{r}
+assay(sce, "counts")[1:10, 1:5]
+```
+
+To see what we mean by heteroskedasticity, let us compare the mean and variance for each gene across cells. We will use the [_MatrixGenerics_](https://bioconductor.org/packages/MatrixGenerics/) package to calculate the row means and row variances. You might be familiar with the [_matrixStats_](https://cran.r-project.org/package=matrixStats) package; _MatrixGenerics_ provides the same set of functions but depending on the type of the matrix automatically dispatches the call to either _matrixStats_, [_DelayedMatrixStats_](https://bioconductor.org/packages/DelayedMatrixStats/), or [_sparseMatrixStats_](https://bioconductor.org/packages/sparseMatrixStats/).
+```{r}
+library(MatrixGenerics)
+# Exclude genes where all counts are zero
+sce <- sce[rowMeans2(counts(sce)) > 0, ]
+gene_means <- rowMeans2(counts(sce))
+gene_var <- rowVars(counts(sce))
+plot(gene_means, gene_var, log = "xy", main = "Log-log scatter plot of mean vs variance")
+abline(a = 0, b = 1)
+sorted_means <- sort(gene_means)
+lines(sorted_means, sorted_means + 0.2 * sorted_means^2, col = "purple")
+```
+The purple line shows a quadratic mean-variance relation ($\text{Var} = \mu + 0.2 \mu^2$) typical for data that is Gamma-Poisson distributed. For example a gene with a mean expression of 5 the corresponding variance is 10, whereas for a gene with a mean expression of 500 the variance ~50,000. Here we used an overdispersion of $\alpha = 0.2$, _transformGamPoi_ provides options to either fit $\alpha$ on the data or fix it to a user-defined value.
+
+_transformGamPoi_ implements two approaches for variance stabilization: (1) based on the delta method, (2) based on model residuals.
+
+## Delta method-based variance stabilizing transformations
+
+The delta method relates the standard deviation of a transformed random variable $g(X_i)$ to the standard deviation of the original random variable $X_i$. This can be used to find a function such that $g(X_i) = \text{const}$. For a quadratic mean variance relation this function is
+$$
+g(x) = \frac{1}{\sqrt{\alpha}} \text{acosh}(2 \alpha x + 1).
+$$
+
+We can apply this transformation to the counts:
+```{r}
+assay(sce, "acosh") <- acosh_transform(assay(sce, "counts"))
+# Equivalent to 'assay(sce, "acosh") <- acosh_transform(sce)'
+```
+
+
+We plot the variance of the `acosh` transformed counts and find that for $\mu < 0.5$ the variance still increases for higher average gene expression. However, for larger expression values the variance for a gene is approximately independent of the corresponding average gene expression (note that the y-axis is not log transformed anymore!).
+```{r}
+acosh_var <- rowVars(assay(sce, "acosh"))
+plot(gene_means, acosh_var, log = "x", main = "Log expression vs variance of acosh stabilized values")
+abline(h = 1)
+```
+
+The most popular transformation for single cell data is $g(x) = \log(x + c)$ with pseudo-count $c=1$. It turns out that this transformation is closely related to the `acosh` transformation. When we choose $c = 1/(4\alpha)$ the two converge rapidly, only for small values the `acosh` is closer to $g(x) = 2\sqrt{x}$:
+```{r}
+x <- seq(0, 30, length.out = 1000)
+y_acosh <- acosh_transform(x, overdispersion = 0.1)
+y_shiftLog <- shifted_log_transform(x, pseudo_count = 1/(4 * 0.1))
+y_sqrt <- 2 * sqrt(x) # Identical to acosh_transform(x, overdispersion = 0)
+```
+The plot looks as follows:
+```{r}
+plot(x, y_acosh, type = "l", col = "black", lwd = 3, ylab = "g(x)", ylim = c(0, 10))
+lines(x, y_shiftLog, col = "red", lwd = 3)
+lines(x, y_sqrt, col = "blue", lwd = 3)
+legend("bottomright", legend = c(expression(2*sqrt(x)), 
+                                 expression(1/sqrt(alpha)~acosh(2*alpha*x+1)),
+                                 expression(1/sqrt(alpha)~log(x+1/(4*alpha))+b)),
+       col = c("blue", "black", "red"), lty = 1, inset = 0.1, lwd = 3)
+```
+The offset $b$ for the shifted logarithm has no influence on the variance stabilization. We choose $b$ such that sparsity of the input is retained (i.e., $g(0) = 0$).
+
+
+
+## Model residuals-based variance stabilizing transformations
+
+An alternative approach for variance stabilization was suggested by Hafemeister and Satija (2019). They used the Pearson residuals from a Gamma-Poisson generalized linear model fit as the variance stabilized values. The advantage of this approach is that the variance is also stabilized for lowly expressed genes unlike the delta method-based transformations:
+```{r}
+assay(sce, "pearson") <- residual_transform(sce, "pearson", clipping = TRUE, on_disk = FALSE)
+```
+
+```{r}
+pearson_var <- rowVars(assay(sce, "pearson"))
+plot(gene_means, pearson_var, log = "x", main = "Log expression vs variance of Pearson residuals")
+abline(h = 1)
+```
+
+Pearson residuals are by definition a linear transformation. This means that for genes with strong expression differences across subgroups they cannot achieve variance stabilization. As an alternative, _transformGamPoi_ provides  randomized quantile residuals which are non-linear and exploit randomization to work around the discrete nature of counts:
+```{r}
+assay(sce, "rand_quantile") <- residual_transform(sce, "randomized_quantile", on_disk = FALSE)
+```
+
+
+```{r}
+rand_quant_var <- rowVars(assay(sce, "rand_quantile"))
+plot(gene_means, rand_quant_var, log = "x", main = "Log expression vs variance of Randomized Quantile residuals")
+abline(h = 1)
+```
+
+
+
+

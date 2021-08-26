@@ -25,8 +25,11 @@ Imports:
 Suggests: 
     testthat,
     TENxPBMCData,
-    scran
+    scran,
+    knitr,
+    rmarkdown
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
 Config/testthat/edition: 3
 biocViews: SingleCell, VarianceStabilization, Normalization, Regression
+VignetteBuilder: knitr
