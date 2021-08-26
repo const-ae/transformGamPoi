@@ -134,6 +134,7 @@ estimate_size_factors <- function(Y, method, verbose = FALSE){
         sf <- scran::calculateSumFactors(Y)
       }, error = function(err){
         stop("Error in size factor estimation with 'size_factors = \"deconvolution\"'.\n",
+             "Alternative size factor estimation procedures are: \"normed_sum\" or \"poscounts\"\n",
              "'scran::calculateSumFactors(Y)' threw the following error: \n\t",
              err, call. = FALSE)
       })
