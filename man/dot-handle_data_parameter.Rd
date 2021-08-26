@@ -6,6 +6,9 @@
 \usage{
 .handle_data_parameter(data, on_disk, allow_sparse = TRUE)
 }
+\value{
+A matrix.
+}
 \description{
 Adapted from glmGamPoi:::handle_data_parameter
 }

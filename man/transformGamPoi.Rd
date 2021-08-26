@@ -98,6 +98,9 @@ Variance Stabilizing Transformation for Gamma Poisson Data
 
 }
 \references{
+Ahlmann-Eltze, Constantin, and Wolfgang Huber. "Transformation and Preprocessing of Single-Cell
+RNA-Seq Data." bioRxiv (2021).
+
 Ahlmann-Eltze, Constantin, and Wolfgang Huber. "glmGamPoi: Fitting Gamma-Poisson Generalized Linear
 Models on Single Cell Count Data." Bioinformatics (2020)
 
@@ -111,7 +114,7 @@ Hafemeister, Christoph, and Rahul Satija. "Analyzing scRNA-seq data with the sct
 models." (2020)
 
 Lause, Jan, Philipp Berens, and Dmitry Kobak. "Analytic Pearson residuals for normalization of
-single-cell RNA-seq UMI data." bioRxiv (2020).
+single-cell RNA-seq UMI data." bioRxiv (2021).
 }
 \seealso{
 \code{\link{acosh_transform}}, \code{\link{shifted_log_transform}}, and \code{\link{residual_transform}}

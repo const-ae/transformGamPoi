@@ -4,6 +4,7 @@
 #'
 #' Adapted from glmGamPoi:::handle_data_parameter
 #'
+#' @return A matrix.
 #'
 #' @keywords internal
 .handle_data_parameter <- function(data, on_disk, allow_sparse = TRUE){

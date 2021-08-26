@@ -28,6 +28,9 @@
 #' @seealso [`acosh_transform`], [`shifted_log_transform`], and [`residual_transform`]
 #'
 #' @references
+#'   Ahlmann-Eltze, Constantin, and Wolfgang Huber. "Transformation and Preprocessing of Single-Cell
+#'   RNA-Seq Data." bioRxiv (2021).
+#'
 #'   Ahlmann-Eltze, Constantin, and Wolfgang Huber. "glmGamPoi: Fitting Gamma-Poisson Generalized Linear
 #'   Models on Single Cell Count Data." Bioinformatics (2020)
 #'
@@ -41,7 +44,7 @@
 #'   models." (2020)
 #'
 #'   Lause, Jan, Philipp Berens, and Dmitry Kobak. "Analytic Pearson residuals for normalization of
-#'   single-cell RNA-seq UMI data." bioRxiv (2020).
+#'   single-cell RNA-seq UMI data." bioRxiv (2021).
 #'
 #' @examples
 #'   # Load a single cell dataset
