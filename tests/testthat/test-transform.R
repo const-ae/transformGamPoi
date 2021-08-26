@@ -147,7 +147,7 @@ test_that("overdispersion handling works", {
   res4 <- shifted_log_transform(Y, overdispersion = fit$overdispersion_shrinkage_list$dispersion_trend)
   expect_equal(res3, res4)
 
-  fit <- glmGamPoi::glm_gp(Y, design = ~ 1, overdispersion_shrinkage = FALSE)
+  fit <- glmGamPoi::glm_gp(Y, design = ~ 1, overdispersion_shrinkage = TRUE)
   res5 <- acosh_transform(Y, overdispersion = TRUE)
   res6 <- acosh_transform(Y, overdispersion = fit$overdispersion_shrinkage_list$dispersion_trend)
 
