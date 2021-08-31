@@ -25,11 +25,13 @@ R package that accompanies our paper 'Transformation and Preprocessing of Single
 
 ## Installation
 
-You can install the current development version of `transformGamPoi` using:
+You can install the current development version of `transformGamPoi` by typing the following into the [_R_](https://cloud.r-project.org/) console:
 ``` r
 # install.packages("devtools")
 devtools::install_github("const-ae/transformGamPoi")
 ```
+The installation should only take a few seconds and work across all major operating systems (MacOS, Linux, Windows). 
+
 ## Example
 
 Let's compare the different variance-stabilizing transformations.

@@ -18,13 +18,17 @@ cell count data:
 
 ## Installation
 
-You can install the current development version of `transformGamPoi`
-using:
+You can install the current development version of `transformGamPoi` by
+typing the following into the [*R*](https://cloud.r-project.org/)
+console:
 
 ``` r
 # install.packages("devtools")
 devtools::install_github("const-ae/transformGamPoi")
 ```
+
+The installation should only take a few seconds and work across all
+major operating systems (MacOS, Linux, Windows).
 
 ## Example
 
@@ -128,11 +132,11 @@ sessionInfo()
 #>  [1] TENxPBMCData_1.10.0         HDF5Array_1.20.0           
 #>  [3] rhdf5_2.36.0                DelayedArray_0.18.0        
 #>  [5] Matrix_1.3-4                SingleCellExperiment_1.14.1
-#>  [7] SummarizedExperiment_1.22.0 Biobase_2.52.0             
+#>  [7] SummarizedExperiment_1.23.4 Biobase_2.52.0             
 #>  [9] GenomicRanges_1.44.0        GenomeInfoDb_1.28.0        
 #> [11] IRanges_2.26.0              S4Vectors_0.30.0           
-#> [13] BiocGenerics_0.38.0         MatrixGenerics_1.5.1       
-#> [15] matrixStats_0.59.0          transformGamPoi_0.1.2      
+#> [13] BiocGenerics_0.38.0         MatrixGenerics_1.5.3       
+#> [15] matrixStats_0.60.0          transformGamPoi_0.1.4      
 #> 
 #> loaded via a namespace (and not attached):
 #>  [1] httr_1.4.2                    bit64_4.0.5                  
@@ -153,7 +157,7 @@ sessionInfo()
 #> [31] generics_0.1.0                ellipsis_0.3.2               
 #> [33] withr_2.4.2                   cachem_1.0.5                 
 #> [35] magrittr_2.0.1                crayon_1.4.1                 
-#> [37] mime_0.10                     memoise_2.0.0                
+#> [37] mime_0.11                     memoise_2.0.0                
 #> [39] evaluate_0.14                 fansi_0.5.0                  
 #> [41] tools_4.1.0                   lifecycle_1.0.0              
 #> [43] stringr_1.4.0                 Rhdf5lib_1.14.1              
@@ -161,9 +165,9 @@ sessionInfo()
 #> [47] compiler_4.1.0                rlang_0.4.11                 
 #> [49] grid_4.1.0                    RCurl_1.98-1.3               
 #> [51] rhdf5filters_1.4.0            rappdirs_0.3.3               
-#> [53] glmGamPoi_1.5.2               bitops_1.0-7                 
+#> [53] glmGamPoi_1.5.3               bitops_1.0-7                 
 #> [55] rmarkdown_2.9                 ExperimentHub_2.0.0          
-#> [57] DBI_1.1.1                     curl_4.3.1                   
+#> [57] DBI_1.1.1                     curl_4.3.2                   
 #> [59] R6_2.5.0                      knitr_1.33                   
 #> [61] dplyr_1.0.7                   fastmap_1.1.0                
 #> [63] bit_4.0.4                     utf8_1.2.1                   
