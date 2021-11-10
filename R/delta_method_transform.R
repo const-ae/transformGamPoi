@@ -89,7 +89,11 @@ acosh_transform <- function(data, overdispersion = 0.05,
     overdispersion <- .handle_overdispersion(overdispersion, counts)
   }
 
-  norm_counts <- DelayedArray::sweep(counts, 2, size_factors, FUN = "/")
+  if(is(counts, "dgCMatrix")){
+    norm_counts <- sparse_divide_out_size_factor(counts, size_factors)
+  }else{
+    norm_counts <- DelayedArray::sweep(counts, 2, size_factors, FUN = "/")
+  }
 
   overdispersion_near_zero <- .near(overdispersion, 0)
 
@@ -167,10 +171,12 @@ shifted_log_transform <- function(data,
     overdispersion <- .handle_overdispersion(overdispersion, counts)
   }
 
+  if(is(counts, "dgCMatrix")){
+    norm_counts <- sparse_divide_out_size_factor(counts, size_factors)
+  }else{
+    norm_counts <- DelayedArray::sweep(counts, 2, size_factors, FUN = "/")
+  }
 
-
-
-  norm_counts <- DelayedArray::sweep(counts, 2, size_factors, FUN = "/")
 
   overdispersion[overdispersion < minimum_overdispersion] <- minimum_overdispersion
 
