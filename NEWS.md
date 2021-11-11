@@ -1,3 +1,8 @@
+# transformGamPoi 1.1.x
+
+* Implement faster scaling with size factors for acosh and log-based transformations
+
+
 # transformGamPoi 0.1.x
 
 * Add clipping functionality to `residual_transform()`
