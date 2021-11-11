@@ -14,14 +14,15 @@ URL: https://github.com/const-ae/transformGamPoi
 License: GPL-3
 Encoding: UTF-8
 Imports:
-  glmGamPoi,
-  DelayedArray,
-  Matrix,
-  MatrixGenerics,
-  SummarizedExperiment,
-  HDF5Array,
-  methods,
-  utils
+    glmGamPoi,
+    DelayedArray,
+    Matrix,
+    MatrixGenerics,
+    SummarizedExperiment,
+    HDF5Array,
+    methods,
+    utils,
+    Rcpp
 Suggests: 
     testthat,
     TENxPBMCData,
@@ -29,7 +30,9 @@ Suggests:
     knitr,
     rmarkdown
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 Config/testthat/edition: 3
 biocViews: SingleCell, Normalization, Preprocessing, Regression
 VignetteBuilder: knitr
+LinkingTo: 
+    Rcpp
