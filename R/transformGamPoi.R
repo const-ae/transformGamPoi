@@ -4,7 +4,7 @@
 #' @param data any matrix-like object (e.g. matrix, dgCMatrix, DelayedArray, HDF5Matrix)
 #'   with one column per sample and row per gene. It can also be an object of type `glmGamPoi`,
 #'   in which case it is directly used to calculate the variance-stabilized values.
-#' @param transformation one of `c("acosh", "shifted_log", "randomized_quantile_residuals", "pearson_residuals")`.
+#' @param transformation one of `c("acosh", "shifted_log", "randomized_quantile_residuals", "pearson_residuals", "analytic_pearson_residuals")`.
 #'   See [`acosh_transform`], [`shifted_log_transform`], or [`residual_transform`] for more information.
 #' @param overdispersion the simplest count model is the Poisson model. However, the Poisson model
 #'   assumes that \eqn{variance = mean}. For many applications this is too rigid and the Gamma-Poisson
@@ -44,7 +44,7 @@
 #'   models." (2020)
 #'
 #'   Lause, Jan, Philipp Berens, and Dmitry Kobak. "Analytic Pearson residuals for normalization of
-#'   single-cell RNA-seq UMI data." bioRxiv (2021).
+#'   single-cell RNA-seq UMI data." Genome Biology (2021).
 #'
 #' @examples
 #'   # Load a single cell dataset
@@ -78,7 +78,7 @@
 #'
 #' @export
 transformGamPoi <- function(data,
-                            transformation = c("acosh", "shifted_log", "randomized_quantile_residuals", "pearson_residuals"),
+                            transformation = c("acosh", "shifted_log", "randomized_quantile_residuals", "pearson_residuals", "analytic_pearson_residuals"),
                             overdispersion = 0.05, size_factors = TRUE, ..., on_disk = NULL, verbose = FALSE){
 
   transformation <- match.arg(transformation)
@@ -103,9 +103,12 @@ transformGamPoi <- function(data,
   }else if(transformation == "pearson_residuals"){
     residual_transform(data, residual_type = "pearson", overdispersion = overdispersion, size_factors = size_factors,
                        on_disk = on_disk, verbose = verbose, ...)
+  }else if(transformation == "pearson_residuals"){
+    residual_transform(data, residual_type = "analytic_pearson", overdispersion = overdispersion, size_factors = size_factors,
+                       on_disk = on_disk, verbose = verbose, ...)
   }else{
     stop("Unsupported transformation of type: ", transformation, ". The available options are: \n",
-         paste0(c("acosh", "shifted_log", "randomized_quantile_residuals", "pearson_residuals"), collapse = ", "))
+         paste0(c("acosh", "shifted_log", "randomized_quantile_residuals", "pearson_residuals", "analytic_pearson_residuals"), collapse = ", "))
   }
 
 }

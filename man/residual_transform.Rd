@@ -37,6 +37,7 @@ of \code{\link[statmod:qresiduals]{statmod::qresiduals()}} and the corresponding
 \item{\code{"pearson"}}{The Pearson residuals are defined as \eqn{res = (y - m) / sqrt(m + m^2 * theta)}.}
 \item{\code{"analytic_pearson"}}{Similar to the method above, however, instead of estimating \eqn{m} using a
 GLM model fit, \eqn{m} is approximated by \eqn{m_ij = (\sum_j y_{ij}) (\sum_i y_{ij}) / (\sum_{i,j} y_{ij})}.
+For all details, see Lause et al. (2021).
 Note that \code{overdispersion_shrinkage} and \code{ridge_penalty} are ignored when fitting analytic Pearson residuals.}
 }
 The two above options are the most common choices, however you can use any \code{residual_type} supported by

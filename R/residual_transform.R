@@ -29,6 +29,7 @@
 #'     \item{`"pearson"`}{The Pearson residuals are defined as \eqn{res = (y - m) / sqrt(m + m^2 * theta)}.}
 #'     \item{`"analytic_pearson"`}{Similar to the method above, however, instead of estimating \eqn{m} using a
 #'     GLM model fit, \eqn{m} is approximated by \eqn{m_ij = (\sum_j y_{ij}) (\sum_i y_{ij}) / (\sum_{i,j} y_{ij})}.
+#'     For all details, see Lause et al. (2021).
 #'     Note that `overdispersion_shrinkage` and `ridge_penalty` are ignored when fitting analytic Pearson residuals.}
 #'   }
 #'   The two above options are the most common choices, however you can use any `residual_type` supported by
@@ -164,13 +165,15 @@ residual_transform <- function(data,
 # https://github.com/scverse/scanpy/blob/bd06cc3d1e0bd990f6994e54414512fa0b25fea0/scanpy/experimental/pp/_normalization.py
 # Translated to R by Constantin Ahlmann-Eltze
 analytic_pearson_residual_transform <- function(data,
-                                                  clipping = FALSE,
-                                                  overdispersion = 0.05,
-                                                  size_factors = TRUE,
-                                                  on_disk = NULL,
-                                                  return_fit = FALSE,
-                                                  verbose = FALSE){
-
+                                                clipping = FALSE,
+                                                overdispersion = 0.05,
+                                                size_factors = TRUE,
+                                                on_disk = NULL,
+                                                return_fit = FALSE,
+                                                verbose = FALSE){
+  if(isFALSE(overdispersion)){
+    overdispersion <- 0
+  }
   if(! is.numeric(overdispersion)){
     stop("For 'analytic_pearson' residuals, the overdispersion must be a non-negative double.")
   }

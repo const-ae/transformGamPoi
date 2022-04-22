@@ -7,7 +7,7 @@
 transformGamPoi(
   data,
   transformation = c("acosh", "shifted_log", "randomized_quantile_residuals",
-    "pearson_residuals"),
+    "pearson_residuals", "analytic_pearson_residuals"),
   overdispersion = 0.05,
   size_factors = TRUE,
   ...,
@@ -20,7 +20,7 @@ transformGamPoi(
 with one column per sample and row per gene. It can also be an object of type \code{glmGamPoi},
 in which case it is directly used to calculate the variance-stabilized values.}
 
-\item{transformation}{one of \code{c("acosh", "shifted_log", "randomized_quantile_residuals", "pearson_residuals")}.
+\item{transformation}{one of \code{c("acosh", "shifted_log", "randomized_quantile_residuals", "pearson_residuals", "analytic_pearson_residuals")}.
 See \code{\link{acosh_transform}}, \code{\link{shifted_log_transform}}, or \code{\link{residual_transform}} for more information.}
 
 \item{overdispersion}{the simplest count model is the Poisson model. However, the Poisson model
@@ -114,7 +114,7 @@ Hafemeister, Christoph, and Rahul Satija. "Analyzing scRNA-seq data with the sct
 models." (2020)
 
 Lause, Jan, Philipp Berens, and Dmitry Kobak. "Analytic Pearson residuals for normalization of
-single-cell RNA-seq UMI data." bioRxiv (2021).
+single-cell RNA-seq UMI data." Genome Biology (2021).
 }
 \seealso{
 \code{\link{acosh_transform}}, \code{\link{shifted_log_transform}}, and \code{\link{residual_transform}}
