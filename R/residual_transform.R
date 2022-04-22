@@ -30,7 +30,8 @@
 #'     \item{`"analytic_pearson"`}{Similar to the method above, however, instead of estimating \eqn{m} using a
 #'     GLM model fit, \eqn{m} is approximated by \eqn{m_ij = (\sum_j y_{ij}) (\sum_i y_{ij}) / (\sum_{i,j} y_{ij})}.
 #'     For all details, see Lause et al. (2021).
-#'     Note that `overdispersion_shrinkage` and `ridge_penalty` are ignored when fitting analytic Pearson residuals.}
+#'     Note that `overdispersion_shrinkage` and `ridge_penalty` are ignored when fitting analytic Pearson residuals and
+#'     `alpha=TRUE` is interpreted as `alpha=0.01`, unlike the other methods which estimate the overdispersion from the data.}
 #'   }
 #'   The two above options are the most common choices, however you can use any `residual_type` supported by
 #'   [`glmGamPoi::residuals.glmGamPoi()`]. Default: `"randomized_quantile"`
@@ -174,8 +175,8 @@ analytic_pearson_residual_transform <- function(data,
   if(isFALSE(overdispersion)){
     overdispersion <- 0
   }
-  if(! is.numeric(overdispersion)){
-    stop("For 'analytic_pearson' residuals, the overdispersion must be a non-negative double.")
+  if(isTRUE(overdispersion)){
+    overdispersion <- 0.01
   }
 
   counts <- .handle_data_parameter(data, on_disk, allow_sparse = TRUE)
