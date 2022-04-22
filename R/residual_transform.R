@@ -27,6 +27,9 @@
 #'     residuals, for the cost of introducing randomness. More details are available in the documentation
 #'     of [`statmod::qresiduals()`] and the corresponding publication by Dunn and Smyth (1996).}
 #'     \item{`"pearson"`}{The Pearson residuals are defined as \eqn{res = (y - m) / sqrt(m + m^2 * theta)}.}
+#'     \item{`"analytic_pearson"`}{Similar to the method above, however, instead of estimating \eqn{m} using a
+#'     GLM model fit, \eqn{m} is approximated by \eqn{m_ij = (\sum_j y_{ij}) (\sum_i y_{ij}) / (\sum_{i,j} y_{ij})}.
+#'     Note that `overdispersion_shrinkage` and `ridge_penalty` are ignored when fitting analytic Pearson residuals.}
 #'   }
 #'   The two above options are the most common choices, however you can use any `residual_type` supported by
 #'   [`glmGamPoi::residuals.glmGamPoi()`]. Default: `"randomized_quantile"`
@@ -70,7 +73,7 @@
 #'   models." (2020)
 #'
 #'   Lause, Jan, Philipp Berens, and Dmitry Kobak. "Analytic Pearson residuals for normalization of
-#'   single-cell RNA-seq UMI data." bioRxiv (2021).
+#'   single-cell RNA-seq UMI data." Genome Biology (2021).
 #'
 #' @examples
 #'   # Load a single cell dataset
@@ -94,7 +97,7 @@
 #'
 #' @export
 residual_transform <- function(data,
-                               residual_type = c("randomized_quantile", "pearson"),
+                               residual_type = c("randomized_quantile", "pearson", "analytic_pearson"),
                                clipping = FALSE,
                                overdispersion = 0.05,
                                size_factors = TRUE,
@@ -107,8 +110,11 @@ residual_transform <- function(data,
 
   # Allow any valid argument from glmGamPoi::residual.glmGamPoi()
   residual_type <- match.arg(residual_type[1], c("deviance", "pearson", "randomized_quantile",
-                                                 "working", "response", "quantile"))
+                                                 "working", "response", "quantile", "analytic_pearson"))
 
+  if(residual_type == "analytic_pearson"){
+    return(analytic_pearson_residual_transform(data = data, clipping = clipping, overdispersion = overdispersion, size_factors = size_factors, on_disk = on_disk, return_fit = return_fit, verbose = verbose))
+  }
 
   if(inherits(data, "glmGamPoi")){
     fit <- data
@@ -151,6 +157,45 @@ residual_transform <- function(data,
     resid
   }else{
     list(Residuals = resid, fit = fit)
+  }
+}
+
+# Original implementation in scanpy by Jan Lause
+# https://github.com/scverse/scanpy/blob/bd06cc3d1e0bd990f6994e54414512fa0b25fea0/scanpy/experimental/pp/_normalization.py
+# Translated to R by Constantin Ahlmann-Eltze
+analytic_pearson_residual_transform <- function(data,
+                                                  clipping = FALSE,
+                                                  overdispersion = 0.05,
+                                                  size_factors = TRUE,
+                                                  on_disk = NULL,
+                                                  return_fit = FALSE,
+                                                  verbose = FALSE){
+
+  if(! is.numeric(overdispersion)){
+    stop("For 'analytic_pearson' residuals, the overdispersion must be a non-negative double.")
+  }
+
+  counts <- .handle_data_parameter(data, on_disk, allow_sparse = TRUE)
+  size_factors <- .handle_size_factors(size_factors, counts)
+
+  make_offset_hdf5_mat <- is(counts, "DelayedMatrix") && is(DelayedArray::seed(counts), "HDF5ArraySeed")
+
+  sum_genes <- MatrixGenerics::rowSums2(counts)
+  size_factors <- size_factors / sum(size_factors)
+
+  Mu <- if(make_offset_hdf5_mat){
+    delayed_matrix_multiply(DelayedArray::DelayedArray(matrix(sum_genes, ncol = 1)), DelayedArray::DelayedArray(matrix(size_factors, nrow = 1)))
+  }else{
+    tcrossprod(sum_genes, size_factors)
+  }
+  resid <- (counts - Mu) / sqrt(Mu + Mu^2 * overdispersion)
+  resid <- clip_residuals(resid, clipping)
+  resid <- .convert_to_output(resid, data)
+
+  if(! return_fit){
+    resid
+  }else{
+    list(Residuals = resid, fit = NULL)
   }
 }
 

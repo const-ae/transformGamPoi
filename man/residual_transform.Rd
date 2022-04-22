@@ -6,7 +6,7 @@
 \usage{
 residual_transform(
   data,
-  residual_type = c("randomized_quantile", "pearson"),
+  residual_type = c("randomized_quantile", "pearson", "analytic_pearson"),
   clipping = FALSE,
   overdispersion = 0.05,
   size_factors = TRUE,
@@ -35,6 +35,9 @@ Normal distribution as the residual. This ensures perfectly normal distributed
 residuals, for the cost of introducing randomness. More details are available in the documentation
 of \code{\link[statmod:qresiduals]{statmod::qresiduals()}} and the corresponding publication by Dunn and Smyth (1996).}
 \item{\code{"pearson"}}{The Pearson residuals are defined as \eqn{res = (y - m) / sqrt(m + m^2 * theta)}.}
+\item{\code{"analytic_pearson"}}{Similar to the method above, however, instead of estimating \eqn{m} using a
+GLM model fit, \eqn{m} is approximated by \eqn{m_ij = (\sum_j y_{ij}) (\sum_i y_{ij}) / (\sum_{i,j} y_{ij})}.
+Note that \code{overdispersion_shrinkage} and \code{ridge_penalty} are ignored when fitting analytic Pearson residuals.}
 }
 The two above options are the most common choices, however you can use any \code{residual_type} supported by
 \code{\link[glmGamPoi:residuals.glmGamPoi]{glmGamPoi::residuals.glmGamPoi()}}. Default: \code{"randomized_quantile"}}
@@ -138,7 +141,7 @@ Hafemeister, Christoph, and Rahul Satija. "Analyzing scRNA-seq data with the sct
 models." (2020)
 
 Lause, Jan, Philipp Berens, and Dmitry Kobak. "Analytic Pearson residuals for normalization of
-single-cell RNA-seq UMI data." bioRxiv (2021).
+single-cell RNA-seq UMI data." Genome Biology (2021).
 }
 \seealso{
 \code{\link[glmGamPoi:glm_gp]{glmGamPoi::glm_gp()}}, \code{\link[glmGamPoi:residuals.glmGamPoi]{glmGamPoi::residuals.glmGamPoi()}}, \code{sctransform::vst()},

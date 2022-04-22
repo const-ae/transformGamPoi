@@ -224,3 +224,32 @@ test_that("Clipping works for Pearson residuals", {
 
 })
 
+
+
+test_that("Analytic Pearson residual implementation works", {
+
+  Y <- matrix(rnbinom(n = 10 * 30, mu = 3, size = 1/0.15), nrow = 10, ncol = 5)
+  Y_sp <- as(Y, "dgCMatrix")
+  Y_hdf5 <- HDF5Array::writeHDF5Array(Y)
+  Y_sp_hdf5 <- HDF5Array::writeHDF5Array(Y_sp)
+
+  resid1 <- residual_transform(Y, "pearson")
+  resid2 <- residual_transform(Y, "analytic_pearson")
+  resid3 <- residual_transform(Y, "analytic_pearson", size_factors = "poscounts")
+  resid4 <- residual_transform(Y_sp, "analytic_pearson")
+  resid5 <- residual_transform(Y_hdf5, "analytic_pearson")
+  resid6 <- residual_transform(Y_sp_hdf5, "analytic_pearson")
+  resid7 <- residual_transform(Y, "analytic_pearson", overdispersion = 0.05 + rnorm(10, sd = 0.001))
+
+  expect_equal(resid2, as.matrix(resid4), ignore_attr = TRUE)
+  expect_equal(resid2, as.matrix(resid5), ignore_attr = TRUE)
+  expect_equal(resid2, as.matrix(resid6), ignore_attr = TRUE)
+
+  expect_true(all(diag(cor(resid1, resid2)) > 0.99))
+  expect_true(all(diag(cor(resid1, resid3)) > 0.99))
+  expect_true(all(diag(cor(resid1, as.matrix(resid4))) > 0.99))
+  expect_true(all(diag(cor(resid1, as.matrix(resid5))) > 0.99))
+  expect_true(all(diag(cor(resid1, as.matrix(resid6))) > 0.99))
+  expect_true(all(diag(cor(resid1, as.matrix(resid7))) > 0.99))
+})
+
