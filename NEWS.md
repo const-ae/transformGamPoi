@@ -1,6 +1,7 @@
 # transformGamPoi 1.1.x
 
 * Implement faster scaling with size factors for acosh and log-based transformations
+* Implement analytic Pearson residuals
 
 
 # transformGamPoi 0.1.x
