@@ -245,11 +245,11 @@ test_that("Analytic Pearson residual implementation works", {
   expect_equal(resid2, as.matrix(resid5), ignore_attr = TRUE)
   expect_equal(resid2, as.matrix(resid6), ignore_attr = TRUE)
 
-  expect_true(all(diag(cor(resid1, resid2)) > 0.99))
-  expect_true(all(diag(cor(resid1, resid3)) > 0.99))
-  expect_true(all(diag(cor(resid1, as.matrix(resid4))) > 0.99))
-  expect_true(all(diag(cor(resid1, as.matrix(resid5))) > 0.99))
-  expect_true(all(diag(cor(resid1, as.matrix(resid6))) > 0.99))
-  expect_true(all(diag(cor(resid1, as.matrix(resid7))) > 0.99))
+  expect_true(all(diag(cor(resid1, resid2)) > 0.95))
+  expect_true(all(diag(cor(resid1, resid3)) > 0.95))
+  expect_true(all(diag(cor(resid1, as.matrix(resid4))) > 0.95))
+  expect_true(all(diag(cor(resid1, as.matrix(resid5))) > 0.95))
+  expect_true(all(diag(cor(resid1, as.matrix(resid6))) > 0.95))
+  expect_true(all(diag(cor(resid1, as.matrix(resid7))) > 0.95))
 })
 
