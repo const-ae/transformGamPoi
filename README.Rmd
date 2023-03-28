@@ -68,7 +68,7 @@ plot(mus, rowVars(assay(sce_red, "acosh")), log = "x", col = "#1b9e77aa", cex = 
 points(mus, rowVars(assay(sce_red, "shifted_log")), col = "#d95f02aa", cex = 0.6)
 points(mus, rowVars(assay(sce_red, "pearson")), col = "#7570b3aa", cex = 0.6)
 points(mus, rowVars(assay(sce_red, "rand_quant")), col = "#e7298aaa", cex = 0.6)
-legend("topleft", legend = c("acosh", "shifted log", "Rand. Quantile Resid.", "Pearson Resid."),
+legend("topleft", legend = c("acosh", "shifted log", "Pearson Resid.", "Rand. Quantile Resid."),
        col = c("#1b9e77", "#d95f02", "#7570b3", "#e7298a"), pch = 16)
 ```
 
