@@ -4,9 +4,9 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
-R package that accompanies our paper ‘Transformation and Preprocessing
-of Single-Cell RNA-Seq Data’
-(<https://www.biorxiv.org/content/10.1101/2021.06.24.449781v1>).
+R package that accompanies our paper ‘Comparison of transformations for
+single-cell RNA-seq data’
+(<https://www.nature.com/articles/s41592-023-01814-1>).
 
 `transformGamPoi` provides methods to stabilize the variance of single
 cell count data:
