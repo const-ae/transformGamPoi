@@ -2,16 +2,16 @@ citHeader("To cite transformGamPoi in publications use:")
 
 citEntry(
   entry    = "Article",
-  title    = "Transformation and Preprocessing of Single-Cell {RNA-Seq} Data",
+  title    = "Comparison of transformations for single-cell {RNA-seq} data",
   author   = c(person("Constantin", "Ahlmann-Eltze", comment = c(ORCID = "0000-0002-3762-068X")),
                person("Wolfgang", "Huber", comment = c(ORCID = "0000-0002-0474-2218"))),
-  journal  = "bioRxiv",
-  year     = 2021,
-  publisher = "Cold Spring Harbor Laboratory",
-  url      = "https://www.biorxiv.org/content/10.1101/2021.06.24.449781",
-  doi      = "2021.06.24.449781",
+  journal  = "Nature Methods",
+  year     = 2023,
+  publisher = "Springer Nature",
+  url      = "https://www.nature.com/articles/s41592-023-01814-1",
+  doi      = "10.1038/s41592-023-01814-1",
   textVersion = paste(
     "Constantin Ahlmann-Eltze and Wolfgang Huber.",
-    "\"Transformation and Preprocessing of Single-Cell RNA-Seq Data.\" bioRxiv (2021)"
+    "\"Comparison of transformations for single-cell RNA-seq data.\" Nat Methods (2023)"
   )
 )
